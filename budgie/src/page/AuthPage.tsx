@@ -37,13 +37,43 @@ export default function AuthPage() {
       className="md:w-1/2 text-center md:text-left mb-10 md:mb-0 flex flex-col justify-center"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      transition={{ duration: 0.8, ease: "easeOut" }} // 초기 등장 효과 유지
     >
-      <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">🐥Budgie🐥</h1>
+      {/* 🐥 타이틀 - 글자별 파도 모션 */}
+      <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">
+        <img 
+        src="https://em-content.zobj.net/source/microsoft-teams/337/front-facing-baby-chick_1f425.png" 
+        alt="아기 병아리 이모티콘" 
+        className="inline-block h-12 w-auto mr-2" 
+        />    
+        {"BUDGIE".split("").map((char, i) => (
+          <motion.span
+            key={i}
+            initial={{ y: 0 }}
+            animate={{ y: [0, -8, 0] }} // 위로 들썩였다 내려옴
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              repeatDelay: 0.05,
+              ease: "easeInOut",
+              delay: i * 0.1, // 글자 순서대로 파도 효과
+            }}
+            style={{ display: "inline-block" }}
+          >
+            {char}
+          </motion.span>
+        ))}  {" "}
+        <img 
+        src="https://em-content.zobj.net/source/microsoft-teams/337/front-facing-baby-chick_1f425.png" 
+        alt="아기 병아리 이모티콘" 
+        className="inline-block h-12 w-auto mr-2" 
+        />    
+      </h1>
+
       <p className="text-gray-600 text-xl font-semibold leading-relaxed">
         당신의 소비를 기록하고 목표를 이뤄보세요.<br />
-        혼자하기 힘든 예산관리, 당신의 친구
-        <span className="text-pink-400 font-bold"> Budgie</span>가 함께 도와줍니다.
+        혼자하기 힘든 예산관리, 당신의 친구인{" "}
+        <span className="text-pink-400 font-bold">우리</span>가 함께 도와줄게요!
       </p>
     </motion.div>
 
@@ -216,6 +246,11 @@ export default function AuthPage() {
   );
 }
 
-//회원 가입 성공시, 로그인 창으로 자동으로 이동하게 하기
 //버튼 클릭 후엔 인풋창 비워주기
 //alert토스트로 변경하기
+
+ {/* <img 
+        src="https://em-content.zobj.net/source/microsoft-teams/337/front-facing-baby-chick_1f425.png" 
+        alt="아기 병아리 이모티콘" 
+        className="inline-block h-12 w-auto mr-2" 
+        />     */}
