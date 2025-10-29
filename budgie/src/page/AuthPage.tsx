@@ -232,6 +232,43 @@ export default function AuthPage() {
           </button>
         </form>
 
+        {/* SNS 로그인 버튼 영역 */}
+        <div className="mt-8">
+          {/* <p className="text-center text-gray-500 mb-3">또는 SNS 계정으로 로그인</p> */}
+          <div className="flex justify-center gap-4">
+            {/* 네이버 로그인 */}
+            <button
+              type="button"
+              onClick={() => {
+                window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+              }}
+              className="focus:outline-none"
+            >
+              <img
+                src="/naver_login.png"
+                alt="네이버 로그인"
+                className="w-[183px] h-11 rounded-md overflow-hidden bg-[#03C75A] flex items-center justify-center border border-gray-200 shadow-sm hover:shadow-md transition-transform hover:-translate-y-[2px] focus:outline-none"
+              />
+            </button>
+
+            {/* 카카오 로그인 */}
+            <button
+              type="button"
+              onClick={() => {
+                window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+              }}
+              className="focus:outline-none"
+            >
+              <img
+                src="/kakao_login.png"
+                alt="카카오 로그인"
+                className="w-[183px] h-11 rounded-md overflow-hidden bg-[#FEE500] flex items-center justify-center shadow-sm hover:shadow-md transition-transform hover:-translate-y-[2px] focus:outline-none"
+              />
+            </button>
+          </div>
+        </div>
+
+
         <p className="text-center text-gray-500 mt-6">
           {isLogin ? "계정이 없으신가요?" : "이미 계정이 있으신가요?"}{" "}
           <button
