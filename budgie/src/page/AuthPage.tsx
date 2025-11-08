@@ -240,8 +240,7 @@ export default function AuthPage() {
             <button
               type="button"
               onClick={() => {
-                window.location.href = "http://localhost:8080/oauth2/authorization/naver";
-              }}
+                window.location.href = "http://localhost:8080/api/auth/naver/loginstart";              }}
               className="focus:outline-none"
             >
               <img
@@ -255,7 +254,7 @@ export default function AuthPage() {
             <button
               type="button"
               onClick={() => {
-                window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+                window.location.href = "http://localhost:8080/api/auth/kakao/loginstart";
               }}
               className="focus:outline-none"
             >
@@ -285,9 +284,3 @@ export default function AuthPage() {
 
 //버튼 클릭 후엔 인풋창 비워주기
 //alert토스트로 변경하기
-
- {/* <img 
-        src="https://em-content.zobj.net/source/microsoft-teams/337/front-facing-baby-chick_1f425.png" 
-        alt="아기 병아리 이모티콘" 
-        className="inline-block h-12 w-auto mr-2" 
-        />     */}
