@@ -3,6 +3,11 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import GoalModal from "../components/GoalModal";
 import Calendar from "../components/Calendar";
+import TransactionPanel from "../components/TransactionPanel";
+import type { Transaction } from "../types/Transaction";
+import AddTransactionModal from "../components/AddTransactionModal";
+
+
 
 interface GoalResponse {
   year: number;
@@ -23,6 +28,9 @@ export default function Dashboard() {
   const [monthlyExpense, setMonthlyExpense] = useState(0);
 
   const remaining = goal ? goal.goalAmount - monthlyExpense : 0;
+
+  const [showAddModal, setShowAddModal] = useState(false);
+
 
   // API: 목표 조회
   const fetchGoal = async () => {
@@ -84,6 +92,40 @@ export default function Dashboard() {
     fetchGoal();
     fetchMonthlySummary();
   }, [year, month]);
+
+  //오늘 내역
+  useEffect(() => {
+    fetchTransactionsByDate(todayString);
+  }, []);
+
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  
+  const todayString = `${today.getFullYear()}-${String(
+    today.getMonth() + 1
+  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const [selectedDate, setSelectedDate] = useState<string | null>(todayString);
+  
+  const fetchTransactionsByDate = async (date: string) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const [yearStr, monthStr, dayStr] = date.split("-");
+
+      const res = await axios.get("/api/transactions", {
+        params: {
+          year: Number(yearStr),
+          month: Number(monthStr),
+          day: Number(dayStr),
+        },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setTransactions(res.data || []);
+    } catch (e) {
+      console.error(e);
+      setTransactions([]);
+    }
+  };
+
 
   // UI: 로딩 중
   if (loading)
@@ -151,8 +193,9 @@ export default function Dashboard() {
         </div>
 
         {/* 달력 */}
-        <div className="mt-10 flex justify-center">
-          <div className="w-full max-w-lg">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* LEFT: 달력 */}
+          <div className="w-full">
             <Calendar
               year={year}
               month={month}
@@ -172,10 +215,37 @@ export default function Dashboard() {
                   setMonth(month + 1);
                 }
               }}
-              onSelectDate={(date) => console.log(date)}
+              onSelectDate={(date) => {
+                setSelectedDate(date);
+                fetchTransactionsByDate(date);
+              }}
             />
           </div>
+
+          {/* RIGHT: 선택된 날짜의 소비 내역 패널 */}
+          <TransactionPanel
+            date={selectedDate}
+            transactions={transactions}
+            onCreate={() => {
+              if (!selectedDate) return;
+              setShowAddModal(true);
+            }}
+            onUpdate={(item) => console.log(item)}
+            onDelete={(id) => console.log(id)}
+          />
         </div>
+
+        {showAddModal && selectedDate && (
+          <AddTransactionModal
+            date={selectedDate}
+            onClose={() => setShowAddModal(false)}
+            onSave={() => {
+              fetchTransactionsByDate(selectedDate);
+              fetchMonthlySummary();
+            }}
+          />
+        )}
+
 
       </div>
     </div>
