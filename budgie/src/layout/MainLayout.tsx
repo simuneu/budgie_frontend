@@ -3,9 +3,21 @@ import Sidebar from "../components/Sidebar";
 
 export default function MainLayout() {
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <main className="flex-1 p-6 bg-gray-50">
+    <div
+      className="
+        min-h-screen 
+        flex 
+        bg-gradient-to-br 
+        from-teal-200 via-pink-100 to-white 
+        bg-[length:400%_400%] 
+        animate-gradient-move
+      "
+    >
+      {/* 사이드바 */}
+        <Sidebar />
+
+      {/* 메인 섹션 */}
+      <main className="flex-1 px-10 py-8 relative">
         <Outlet />
       </main>
     </div>

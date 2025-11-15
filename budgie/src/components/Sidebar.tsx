@@ -1,6 +1,6 @@
 export default function Sidebar() {
   return (
-    <div className="w-60 bg-white border-r p-4">
+<div className="w-60 bg-white/85 backdrop-blur shadow-lg min-h-screen px-6 py-8">
       <h2 className="text-xl font-semibold mb-4">Budgie</h2>
 
       <div className="mb-6">

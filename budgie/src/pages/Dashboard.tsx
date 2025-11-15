@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import GoalModal from "../components/GoalModal";
+import Calendar from "../components/Calendar";
 
 interface GoalResponse {
   year: number;
@@ -9,18 +11,20 @@ interface GoalResponse {
 }
 
 export default function Dashboard() {
-  const [goal, setGoal] = useState<GoalResponse | null>(null);
-  const [loading, setLoading] = useState(true);
   const today = new Date();
 
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
+  const [year, setYear] = useState(today.getFullYear());
+  const [month, setMonth] = useState(today.getMonth() + 1);
 
-  useEffect(() => {
-    fetchGoal();
-  }, []);
+  const [goal, setGoal] = useState<GoalResponse | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // 🔹 이번달 목표 조회
+  const [monthlyExpense, setMonthlyExpense] = useState(0);
+
+  const remaining = goal ? goal.goalAmount - monthlyExpense : 0;
+
+  // API: 목표 조회
   const fetchGoal = async () => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -30,7 +34,7 @@ export default function Dashboard() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setGoal(res.data);
+      setGoal(res.data || null);
     } catch {
       setGoal(null);
     } finally {
@@ -38,60 +42,141 @@ export default function Dashboard() {
     }
   };
 
-  // 로딩 중
-  if (loading) return <div className="p-10">불러오는 중...</div>;
+  // API: 월 소비 합계 조회
+  const fetchMonthlySummary = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
 
-  // 목표가 없을 때 → 목표 입력 페이지로 이동하거나 모달 띄울 예정
+      const res = await axios.get("/api/transactions/summary", {
+        params: { year, month },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setMonthlyExpense(res.data.totalExpense ?? 0);
+    } catch {
+      setMonthlyExpense(0);
+    }
+  };
+
+  // 목표 저장
+  const saveGoal = async (amount: number) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      await axios.post(
+        "/api/budget/goal",
+        { year, month, goalAmount: amount },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      toast.success("목표가 저장되었습니다!");
+      setShowModal(false);
+
+      fetchGoal();
+      fetchMonthlySummary();
+    } catch {
+      toast.error("목표 저장 실패");
+    }
+  };
+
+  // 초기 로드 + 연/월 변경 시 재조회
+  useEffect(() => {
+    fetchGoal();
+    fetchMonthlySummary();
+  }, [year, month]);
+
+  // UI: 로딩 중
+  if (loading)
+    return <div className="p-10 text-xl">불러오는 중...</div>;
+
+  // UI: 목표 없음 → 입력 유도
   if (!goal) {
     return (
-      <div className="p-10">
-        <h2 className="text-3xl font-bold mb-4">이번 달 목표가 아직 없어요</h2>
-        <p className="text-gray-600">예산을 설정해볼까요?</p>
+      <div className="relative min-h-screen bg-gradient-to-br from-teal-200 via-pink-100 to-white bg-[length:400%_400%] animate-gradient-move p-6">
 
-        {/* 나중에 모달 or 목표 입력 페이지 연결 */}
-        <button
-          className="mt-4 px-6 py-3 bg-pink-400 text-white rounded-lg shadow-md hover:bg-pink-500"
-          onClick={() => toast.info("목표 입력 모달 만들 예정!")}
-        >
-          목표 설정하기
-        </button>
+        {/* 오버레이 */}
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center">
+          {showModal ? (
+            <GoalModal
+              onClose={() => setShowModal(false)}
+              onSave={saveGoal}
+            />
+          ) : (
+            <div className="bg-white/80 px-10 py-8 rounded-2xl shadow-xl text-center">
+              <h2 className="text-2xl font-bold mb-4">이번 달 목표가 없어요! 🐥</h2>
+              <p className="text-gray-600 mb-4">예산을 먼저 설정해주세요.</p>
+
+              <button
+                className="px-6 py-3 bg-pink-400 text-white rounded-lg shadow hover:bg-pink-500 transition"
+                onClick={() => setShowModal(true)}
+              >
+                목표 설정하기
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
 
-  // 목표가 있을 때 → 실제 대시보드
+  // UI: 목표 있음 → 대시보드 화면
   return (
-    <div className="p-10">
-      <h2 className="text-3xl font-bold mb-6">
-        {year}년 {month}월 소비 요약
-      </h2>
+    <div className="min-h-screen bg-gradient-to-br from-teal-200 via-pink-100 to-white bg-[length:400%_400%] animate-gradient-move p-6">
+      <div className="max-w-6xl mx-auto bg-white/80 rounded-2xl shadow-xl p-8">
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* 목표 금액 */}
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <p className="text-gray-500">월 목표 금액</p>
-          <p className="text-2xl font-bold">{goal.goalAmount.toLocaleString()} 원</p>
+        {/* 소비 요약 */}
+        <h2 className="text-3xl font-bold mb-6 text-gray-800">
+          {year}년 {month}월 소비 요약
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white/80 p-6 rounded-xl shadow-md">
+            <p className="text-gray-600">월 목표 금액</p>
+            <p className="text-2xl font-bold">{goal.goalAmount.toLocaleString()} 원</p>
+          </div>
+
+          <div className="bg-white/80 p-6 rounded-xl shadow-md">
+            <p className="text-gray-600">이번 달 소비 금액</p>
+            <p className="text-2xl font-bold text-pink-500">
+              {monthlyExpense.toLocaleString()} 원
+            </p>
+          </div>
+
+          <div className="bg-white/80 p-6 rounded-xl shadow-md">
+            <p className="text-gray-600">남은 금액</p>
+            <p className="text-2xl font-bold text-teal-500">
+              {remaining.toLocaleString()} 원
+            </p>
+          </div>
         </div>
 
-        {/* 총 소비 (뒤에서 API 연결할 예정) */}
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <p className="text-gray-500">이번 달 소비 금액</p>
-          <p className="text-2xl font-bold text-pink-500">0 원</p>
+        {/* 달력 */}
+        <div className="mt-10 flex justify-center">
+          <div className="w-full max-w-lg">
+            <Calendar
+              year={year}
+              month={month}
+              onPrevMonth={() => {
+                if (month === 1) {
+                  setYear(year - 1);
+                  setMonth(12);
+                } else {
+                  setMonth(month - 1);
+                }
+              }}
+              onNextMonth={() => {
+                if (month === 12) {
+                  setYear(year + 1);
+                  setMonth(1);
+                } else {
+                  setMonth(month + 1);
+                }
+              }}
+              onSelectDate={(date) => console.log(date)}
+            />
+          </div>
         </div>
 
-        {/* 남은 금액 */}
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <p className="text-gray-500">남은 금액</p>
-          <p className="text-2xl font-bold text-teal-500">
-            {goal.goalAmount.toLocaleString()} 원
-          </p>
-        </div>
-      </div>
-
-      {/* 최근 내역 — API 만들면 연결 */}
-      <h3 className="text-xl font-semibold mt-10 mb-4">최근 소비 내역</h3>
-      <div className="bg-white p-6 rounded-xl shadow-md text-gray-600">
-        최근 소비 내역 불러올 예정...
       </div>
     </div>
   );
