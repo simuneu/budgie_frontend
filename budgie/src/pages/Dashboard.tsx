@@ -98,6 +98,29 @@ export default function Dashboard() {
     fetchTransactionsByDate(todayString);
   }, []);
 
+  const handleDelete = async (id: number) => {
+    const token = localStorage.getItem("accessToken");
+
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    try {
+      await axios.delete(`/api/transactions/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success("삭제되었습니다!");
+
+      // 삭제 후 다시 조회
+      if (selectedDate) fetchTransactionsByDate(selectedDate);
+      fetchMonthlySummary();
+    } catch (e) {
+      console.error(e);
+      toast.error("삭제 실패");
+    }
+  };
+
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   
   const todayString = `${today.getFullYear()}-${String(
@@ -126,6 +149,7 @@ export default function Dashboard() {
     }
   };
 
+  const [editItem, setEditItem] = useState<Transaction | null>(null);
 
   // UI: 로딩 중
   if (loading)
@@ -226,19 +250,20 @@ export default function Dashboard() {
           <TransactionPanel
             date={selectedDate}
             transactions={transactions}
-            onCreate={() => {
-              if (!selectedDate) return;
-              setShowAddModal(true);
-            }}
-            onUpdate={(item) => console.log(item)}
-            onDelete={(id) => console.log(id)}
+            onCreate={() => {if (!selectedDate) return;setShowAddModal(true);}}
+            onUpdate={(item) => {setEditItem(item); setShowAddModal(true);}}
+            onDelete={handleDelete}
           />
         </div>
 
         {showAddModal && selectedDate && (
           <AddTransactionModal
+            transaction={editItem ?? undefined}  
             date={selectedDate}
-            onClose={() => setShowAddModal(false)}
+            onClose={() => {
+              setShowAddModal(false);
+              setEditItem(null); // 닫을 때 초기화
+            }}
             onSave={() => {
               fetchTransactionsByDate(selectedDate);
               fetchMonthlySummary();
@@ -251,3 +276,7 @@ export default function Dashboard() {
     </div>
   );
 }
+
+
+// 토스트 알림으로 바꾸기
+// 배경 다음 div지우기
