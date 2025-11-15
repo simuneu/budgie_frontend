@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -16,6 +17,7 @@ export default function AuthPage() {
   const [code, setCode] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [verifyMsg, setVerifyMsg] = useState("");
+  const navigate = useNavigate();
 
   const resetInputs = () => {
     setEmail("");
@@ -96,6 +98,10 @@ export default function AuthPage() {
                   localStorage.setItem("accessToken", res.data.accessToken);
                   localStorage.setItem("refreshToken", res.data.refreshToken);
                   toast.success("로그인 성공!");
+
+                  setTimeout(() => {
+                    navigate("/dashboard");
+                  }, 800);
                 })
                 .catch(() => toast.error("로그인 실패! 이메일 또는 비밀번호를 확인하세요."));
             } else {
