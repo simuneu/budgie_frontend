@@ -48,74 +48,16 @@ export default function TransactionPanel({
   const incomeList = transactions.filter((t) => t.budgetType === "INCOME");
 
   return (
-    <div className="p-6 bg-white/80 rounded-xl shadow-md h-[460px]  flex flex-col">
+    <div className="p-4 md:p-6 bg-white/80 rounded-xl shadow-md h-auto md:h-[460px] flex flex-col">
       {/* 날짜 헤더 */}
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">{date} 내역</h2>
+      <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-800">{date} 내역</h2>
 
       {/* 스크롤 전체 박스 */}
-      <div className="flex-1 overflow-y-auto pr-2 space-y-8">
+      <div className="flex-1 overflow-y-auto pr-1 md:pr-2 space-y-6 md:space-y-8">
 
-        {/* 지출 */}
+      {/* 수입 */}
         <section>
-          <h3 className="text-lg font-semibold text-pink-500 mb-2">지출</h3>
-
-          {expenseList.length === 0 ? (
-            <p className="text-gray-500 text-sm">지출 내역이 없어요.</p>
-          ) : (
-            <ul className="space-y-4">
-              {expenseList.map((t) => {
-                const categoryName = t.categoryName ?? "기타";
-                const key = CATEGORY_KR_TO_KEY[categoryName] ?? "ETC";
-                const icon = CATEGORY_ICONS[key];
-
-                return (
-                  <motion.li
-                    key={t.transactionId}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-lg bg-white shadow flex justify-between items-center"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <span className="text-2xl">{icon}</span>
-
-                      <div>
-                        <p className="font-semibold text-gray-800">
-                          {categoryName}
-                        </p>
-                        <p className="text-gray-600">
-                          {t.amount.toLocaleString()}원
-                        </p>
-                        {t.memo && (
-                          <p className="text-gray-500 text-sm mt-1">{t.memo}</p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex space-x-3 text-sm">
-                      <button
-                        onClick={() => onUpdate(t)}
-                        className="px-3 py-1 rounded-md border border-gray-400 text-gray-500 hover:bg-blue-50 transition"
-                      >
-                        수정
-                      </button>
-
-                      <button
-                        onClick={() => onDelete(t.transactionId)}
-                        className="px-3 py-1 rounded-md border border-pink-400 text-pink-500 hover:bg-pink-50 transition"
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  </motion.li>
-                );
-              })}
-            </ul>
-          )}
-        </section>
-
-        {/* 수입 */}
-        <section>
-          <h3 className="text-lg font-semibold text-blue-500 mb-2">수입</h3>
+          <h3 className="text-lg font-semibold text-gray-500 mb-2">수입</h3>
 
           {incomeList.length === 0 ? (
             <p className="text-gray-500 text-sm">수입 내역이 없어요.</p>
@@ -131,7 +73,7 @@ export default function TransactionPanel({
                     key={t.transactionId}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-lg bg-white shadow flex justify-between items-center"
+                    className="p-3 md:p-4 rounded-lg bg-white shadow flex items-center justify-between"
                   >
                     <div className="flex items-center space-x-3">
                       <span className="text-2xl">{icon}</span>
@@ -151,7 +93,7 @@ export default function TransactionPanel({
                       </div>
                     </div>
 
-                    <div className="flex space-x-3 text-sm">
+                    <div className="flex gap-2 text-xs md:text-sm">
                       <button
                         onClick={() => onUpdate(t)}
                         className="px-3 py-1 rounded-md border border-gray-400 text-gray-500 hover:bg-blue-50 transition"
@@ -172,11 +114,71 @@ export default function TransactionPanel({
             </ul>
           )}
         </section>
+
+        {/* 지출 */}
+        <section>
+          <h3 className="text-lg font-semibold text-pink-500 mb-2">지출</h3>
+
+          {expenseList.length === 0 ? (
+            <p className="text-gray-500 text-sm">지출 내역이 없어요.</p>
+          ) : (
+            <ul className="space-y-4">
+              {expenseList.map((t) => {
+                const categoryName = t.categoryName ?? "기타";
+                const key = CATEGORY_KR_TO_KEY[categoryName] ?? "ETC";
+                const icon = CATEGORY_ICONS[key];
+
+                return (
+                  <motion.li
+                    key={t.transactionId}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-3 md:p-4 rounded-lg bg-white shadow flex items-center justify-between"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <span className="text-2xl">{icon}</span>
+
+                      <div>
+                        <p className="font-semibold text-gray-800">
+                          {categoryName}
+                        </p>
+                        <p className="text-gray-600">
+                          {t.amount.toLocaleString()}원
+                        </p>
+                        {t.memo && (
+                          <p className="text-gray-500 text-sm mt-1">{t.memo}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 text-xs md:text-sm shrink-0">
+                      <button
+                        onClick={() => onUpdate(t)}
+                        className="px-3 py-1 rounded-md border border-gray-400 text-gray-500 hover:bg-gray-50 transition"
+                      >
+                        수정
+                      </button>
+
+                      <button
+                        onClick={() => onDelete(t.transactionId)}
+                        className="px-3 py-1 rounded-md border border-pink-400 text-pink-500 hover:bg-pink-50 transition"
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  </motion.li>
+                );
+              })}
+            </ul>
+          )}
+        </section>
+
+        
       </div>
 
       {/* 등록 버튼 */}
       <button
-        className="mt-6 w-full bg-pink-400 text-white py-3 rounded-lg shadow-md hover:bg-pink-500 transition"
+        className="mt-4 md:mt-6 w-full bg-pink-400 text-white py-2 md:py-3 rounded-lg shadow-md hover:bg-pink-500 transition"
         onClick={() => onCreate(date)}
       >
         등록

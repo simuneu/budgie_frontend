@@ -188,28 +188,28 @@ export default function Dashboard() {
 
   // UI: 목표 있음 → 대시보드 화면
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-200 via-pink-100 to-white bg-[length:400%_400%] animate-gradient-move p-6">
+    <div className="min-h-screen">
       <div className="max-w-6xl mx-auto bg-white/80 rounded-2xl shadow-xl p-8">
 
         {/* 소비 요약 */}
         <h2 className="text-3xl font-bold mb-6 text-gray-800">
-          {year}년 {month}월 소비 요약
+          {year}년 {month}월 현황
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white/80 p-6 rounded-xl shadow-md">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="bg-white/80  p-5 rounded-xl shadow">
             <p className="text-gray-600">월 목표 금액</p>
             <p className="text-2xl font-bold">{goal.goalAmount.toLocaleString()} 원</p>
           </div>
 
-          <div className="bg-white/80 p-6 rounded-xl shadow-md">
+          <div className="bg-white/80  p-5 rounded-xl shadow">
             <p className="text-gray-600">이번 달 소비 금액</p>
             <p className="text-2xl font-bold text-pink-500">
               {monthlyExpense.toLocaleString()} 원
             </p>
           </div>
 
-          <div className="bg-white/80 p-6 rounded-xl shadow-md">
+          <div className="bg-white/80  p-5 rounded-xl shadow">
             <p className="text-gray-600">남은 금액</p>
             <p className="text-2xl font-bold text-teal-500">
               {remaining.toLocaleString()} 원
@@ -218,7 +218,7 @@ export default function Dashboard() {
         </div>
 
         {/* 달력 */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           {/* LEFT: 달력 */}
           <div className="w-full">
             <Calendar
@@ -256,7 +256,9 @@ export default function Dashboard() {
             onDelete={handleDelete}
           />
         </div>
-        <StatisticsPanel year={year} month={month} />
+        <div className="mt-10">
+          <StatisticsPanel year={year} month={month} />
+        </div>
 
         {showAddModal && selectedDate && (
           <AddTransactionModal
@@ -280,5 +282,4 @@ export default function Dashboard() {
 }
 
 
-// 토스트 알림으로 바꾸기
 // 배경 다음 div지우기

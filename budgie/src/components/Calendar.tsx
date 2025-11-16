@@ -42,9 +42,9 @@ export default function Calendar({
   };
 
   return (
-    <div className="bg-white/80 rounded-2xl shadow-lg p-6 h-full flex flex-col ">
+     <div className="bg-white/80 rounded-2xl shadow-lg p-4 md:p-6 h-full flex flex-col">
 
-      {/* 🔹 달 이동 헤더 */}
+      {/*  달 이동 헤더 */}
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={onPrevMonth}
@@ -53,7 +53,7 @@ export default function Calendar({
           ◀
         </button>
 
-        <h3 className="text-xl font-bold text-gray-800">
+        <h3 className="text-lg md:text-xl font-bold text-gray-800">
           {year}년 {month}월
         </h3>
 
@@ -66,14 +66,14 @@ export default function Calendar({
       </div>
 
       {/* 요일 */}
-      <div className="grid grid-cols-7 text-center mb-2 text-gray-500 font-semibold">
+       <div className="grid grid-cols-7 text-center mb-2 text-gray-500 font-semibold text-xs md:text-sm">
         {["일", "월", "화", "수", "목", "금", "토"].map((d) => (
           <div key={d}>{d}</div>
         ))}
       </div>
 
       {/* 날짜 */}
-      <div className="grid grid-cols-7 gap-2 text-center">
+      <div className="grid grid-cols-7 gap-1 md:gap-2 text-center">
         {dates.map((day, idx) => {
           const isToday =
             day &&
@@ -100,6 +100,8 @@ export default function Calendar({
                 }
                 ${isToday ? "border border-pink-400" : ""}
                 ${isSelected ? "bg-pink-200 font-bold" : ""}
+                 h-8 md:h-12
+                text-xs md:text-base
               `}
             >
               {day ?? ""}
