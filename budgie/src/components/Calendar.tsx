@@ -42,7 +42,7 @@ export default function Calendar({
   };
 
   return (
-    <div className="bg-white/80 rounded-2xl shadow-lg p-6">
+    <div className="bg-white/80 rounded-2xl shadow-lg p-6 h-full flex flex-col ">
 
       {/* 🔹 달 이동 헤더 */}
       <div className="flex items-center justify-between mb-4">

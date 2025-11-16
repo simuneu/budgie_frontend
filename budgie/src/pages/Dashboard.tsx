@@ -217,7 +217,7 @@ export default function Dashboard() {
         </div>
 
         {/* 달력 */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
           {/* LEFT: 달력 */}
           <div className="w-full">
             <Calendar

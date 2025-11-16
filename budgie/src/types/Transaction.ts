@@ -5,4 +5,5 @@ export interface Transaction {
   date: string;
   categoryId: number;
   categoryName?: string;
+   budgetType: "EXP" | "INCOME";
 }

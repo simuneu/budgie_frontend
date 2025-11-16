@@ -3,6 +3,7 @@ import axios from "axios";
 import { CATEGORY_ICONS } from "../utils/categoryIcons";
 import { CATEGORY_LABELS } from "../utils/categoryLabel";
 import type { Transaction } from "../types/Transaction";
+import { toast } from "react-toastify";
 
 interface Props {
   date: string;  // 선택된 날짜
@@ -38,7 +39,7 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
     const token = localStorage.getItem("accessToken");
 
     if (!categoryId || !amount) {
-      alert("카테고리와 금액은 필수입니다.");
+       toast.error("카테고리와 금액은 필수입니다.");
       return;
     }
 
@@ -66,7 +67,7 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
       onClose();
     } catch (e) {
       console.error(e);
-      alert("요청 실패");
+      toast.success("새 내역이 등록되었습니다!");
     }
   };
 
