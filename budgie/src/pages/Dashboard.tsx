@@ -8,7 +8,10 @@ import type { Transaction } from "../types/Transaction";
 import AddTransactionModal from "../components/AddTransactionModal";
 import StatisticsPanel from "../components/StatisticsPanel";
 
-
+interface RecordedDay {
+  day: number;
+  totalAmount: number;
+}
 
 interface GoalResponse {
   year: number;
@@ -17,6 +20,8 @@ interface GoalResponse {
 }
 
 export default function Dashboard() {
+  const [recordedDays, setRecordedDays] = useState<RecordedDay[]>([]);
+
   const today = new Date();
 
   const [year, setYear] = useState(today.getFullYear());
@@ -88,6 +93,18 @@ export default function Dashboard() {
     }
   };
 
+  useEffect(() => {
+  const token = localStorage.getItem("accessToken");
+
+  axios
+    .get(`/api/transactions/days`, {
+      params: { year, month },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((res) => setRecordedDays(res.data))
+    .catch(() => setRecordedDays([]));
+}, [year, month]);
+
   // 초기 로드 + 연/월 변경 시 재조회
   useEffect(() => {
     fetchGoal();
@@ -98,6 +115,17 @@ export default function Dashboard() {
   useEffect(() => {
     fetchTransactionsByDate(todayString);
   }, []);
+
+  const refreshRecordedDays = () => {
+  const token = localStorage.getItem("accessToken");
+  axios
+    .get("/api/transactions/days", {
+      params: { year, month },
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((res) => setRecordedDays(res.data))
+    .catch(() => setRecordedDays([]));
+};
 
   const handleDelete = async (id: number) => {
     const token = localStorage.getItem("accessToken");
@@ -114,8 +142,10 @@ export default function Dashboard() {
       toast.success("삭제되었습니다!");
 
       // 삭제 후 다시 조회
-      if (selectedDate) fetchTransactionsByDate(selectedDate);
+      if (selectedDate) 
+        fetchTransactionsByDate(selectedDate);
       fetchMonthlySummary();
+      refreshRecordedDays();
     } catch (e) {
       console.error(e);
       toast.error("삭제 실패");
@@ -224,6 +254,7 @@ export default function Dashboard() {
             <Calendar
               year={year}
               month={month}
+              recordedDays={recordedDays}
               onPrevMonth={() => {
                 if (month === 1) {
                   setYear(year - 1);
@@ -231,6 +262,7 @@ export default function Dashboard() {
                 } else {
                   setMonth(month - 1);
                 }
+                 setSelectedDate(null);
               }}
               onNextMonth={() => {
                 if (month === 12) {
@@ -271,6 +303,7 @@ export default function Dashboard() {
             onSave={() => {
               fetchTransactionsByDate(selectedDate);
               fetchMonthlySummary();
+               refreshRecordedDays(); 
             }}
           />
         )}
@@ -280,6 +313,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
-
-// 배경 다음 div지우기

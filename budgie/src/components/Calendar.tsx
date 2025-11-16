@@ -1,8 +1,14 @@
 import { useState } from "react";
 
+interface RecordedDay {
+  day: number;
+  totalAmount: number;
+}
+
 interface CalendarProps {
   year: number;
   month: number;
+   recordedDays: RecordedDay[];
   onPrevMonth: () => void;
   onNextMonth: () => void;
   onSelectDate: (date: string) => void;
@@ -11,6 +17,7 @@ interface CalendarProps {
 export default function Calendar({
   year,
   month,
+  recordedDays, 
   onPrevMonth,
   onNextMonth,
   onSelectDate,
@@ -29,6 +36,9 @@ export default function Calendar({
 
   // 날짜 채우기
   for (let d = 1; d <= lastDate; d++) dates.push(d);
+
+   const hasRecord = (day: number | null) =>
+    day && recordedDays.some((rd) => rd.day === day);
 
   const handleClick = (day: number | null) => {
     if (!day) return;
@@ -92,19 +102,18 @@ export default function Calendar({
               key={idx}
               onClick={() => handleClick(day)}
               className={`
-                h-12 flex items-center justify-center rounded-xl cursor-pointer transition
-                ${
-                  day
-                    ? "bg-white hover:bg-pink-100"
-                    : "bg-transparent cursor-default"
-                }
+                h-12 flex flex-col items-center justify-center rounded-xl cursor-pointer transition
+                ${day ? "bg-white hover:bg-pink-100" : "bg-transparent cursor-default"}
                 ${isToday ? "border border-pink-400" : ""}
                 ${isSelected ? "bg-pink-200 font-bold" : ""}
-                 h-8 md:h-12
                 text-xs md:text-base
               `}
             >
-              {day ?? ""}
+              <span>{day ?? ""}</span>
+
+              {hasRecord(day) && day && (
+                <span className="w-1.5 h-1.5 bg-teal-500 rounded-full mt-[2px]"></span>
+              )}
             </div>
           );
         })}
