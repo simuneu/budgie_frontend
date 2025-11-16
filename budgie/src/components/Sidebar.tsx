@@ -1,4 +1,34 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+interface UserInfo {
+  userId: number;
+  email: string;
+  nickname: string;
+}
+
+
 export default function Sidebar() {
+  const [user, setUser] = useState<UserInfo | null>(null);
+
+  const fetchMyInfo = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const res = await axios.get("/api/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUser(res.data);
+    } catch (err) {
+      console.error("유저 정보 불러오기 실패", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchMyInfo();
+  }, []);
+
   return (
     <div className="
        /* 모바일 기본 스타일 */
@@ -22,17 +52,42 @@ export default function Sidebar() {
         md:top-14
         md:mb-14
     ">
-      <h2 className="text-xl font-semibold mb-4">Budgie</h2>
+      <div className="mb-6 flex flex-col items-center text-center gap-2">
+        {/* 병아리 프로필 */}
+        <div
+          className="
+            w-14 h-14
+            rounded-full 
+            bg-yellow-200 
+            flex items-center justify-center
+            text-3xl
+            shadow
+          "
+        >
+          🐣
+        </div>
 
-      <div className="mb-6">
-        <p className="font-medium">사용자</p>
-        <p className="text-gray-600 text-sm">user@example.com</p>
+        {/* 사용자 정보 */}
+         {/* 닉네임 */}
+        <p className="font-medium">
+          {user ? user.nickname : "로딩중..."}
+        </p>
+        {/* 이메일 */}
+        <p className="text-gray-600 text-sm">
+          {user ? user.email : ""}
+        </p>
+
       </div>
 
-      <nav className="flex flex-col gap-2">
-        <a href="/dashboard" className="hover:text-blue-500">대시보드</a>
-        <a href="/mypage" className="hover:text-blue-500">마이페이지</a>
-      </nav>
+      {/* 네비게이션 */}
+      <nav className="flex flex-col gap-2 items-center text-center">
+      <a href="/dashboard" className="hover:text-blue-500">
+        대시보드
+      </a>
+      <a href="/mypage" className="hover:text-blue-500">
+        마이페이지
+      </a>
+</nav>
     </div>
   );
 }
