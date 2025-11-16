@@ -57,7 +57,7 @@ export default function TransactionPanel({
 
         {/* 지출 */}
         <section>
-          <h3 className="text-lg font-semibold text-red-500 mb-2">지출</h3>
+          <h3 className="text-lg font-semibold text-pink-500 mb-2">지출</h3>
 
           {expenseList.length === 0 ? (
             <p className="text-gray-500 text-sm">지출 내역이 없어요.</p>
@@ -101,7 +101,7 @@ export default function TransactionPanel({
 
                       <button
                         onClick={() => onDelete(t.transactionId)}
-                        className="px-3 py-1 rounded-md border border-red-400 text-red-500 hover:bg-red-50 transition"
+                        className="px-3 py-1 rounded-md border border-pink-400 text-pink-500 hover:bg-pink-50 transition"
                       >
                         삭제
                       </button>

@@ -6,6 +6,7 @@ import Calendar from "../components/Calendar";
 import TransactionPanel from "../components/TransactionPanel";
 import type { Transaction } from "../types/Transaction";
 import AddTransactionModal from "../components/AddTransactionModal";
+import StatisticsPanel from "../components/StatisticsPanel";
 
 
 
@@ -255,6 +256,7 @@ export default function Dashboard() {
             onDelete={handleDelete}
           />
         </div>
+        <StatisticsPanel year={year} month={month} />
 
         {showAddModal && selectedDate && (
           <AddTransactionModal
