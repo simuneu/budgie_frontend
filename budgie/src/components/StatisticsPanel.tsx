@@ -111,7 +111,7 @@ export default function StatisticsPanel({ year, month }: Props) {
           ) : (
             <>
               <div className="w-full h-[300px] md:h-[260px]">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <PieChart>
                     <Pie
                       data={incomeSummary}
@@ -153,7 +153,7 @@ export default function StatisticsPanel({ year, month }: Props) {
           ) : (
             <>
               <div className="w-full h-[300px] md:h-[260px]">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <PieChart>
                     <Pie
                       data={expenseSummary}

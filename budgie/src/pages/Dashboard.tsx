@@ -7,6 +7,7 @@ import TransactionPanel from "../components/TransactionPanel";
 import type { Transaction } from "../types/Transaction";
 import AddTransactionModal from "../components/AddTransactionModal";
 import StatisticsPanel from "../components/StatisticsPanel";
+import DeleteConfirmModal from "../components/DeleteConfirmModal";
 
 interface RecordedDay {
   day: number;
@@ -36,7 +37,7 @@ export default function Dashboard() {
   const remaining = goal ? goal.goalAmount - monthlyExpense : 0;
 
   const [showAddModal, setShowAddModal] = useState(false);
-
+  const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
   // API: 목표 조회
   const fetchGoal = async () => {
@@ -128,29 +129,36 @@ export default function Dashboard() {
 };
 
   const handleDelete = async (id: number) => {
-    const token = localStorage.getItem("accessToken");
+     setItemToDelete(id);
+   };
 
-    if (!confirm("정말 삭제하시겠습니까?")) return;
+  const confirmDelete = async () => {
+    if (itemToDelete === null) return;
+
+    const id = itemToDelete;
+     setItemToDelete(null);
+    
+    const token = localStorage.getItem("accessToken");
 
     try {
       await axios.delete(`/api/transactions/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+         headers: {
+           Authorization: `Bearer ${token}`,
+         },
       });
 
-      toast.success("삭제되었습니다!");
+       toast.success("삭제되었습니다!");
 
       // 삭제 후 다시 조회
       if (selectedDate) 
-        fetchTransactionsByDate(selectedDate);
+      fetchTransactionsByDate(selectedDate);
       fetchMonthlySummary();
       refreshRecordedDays();
-    } catch (e) {
-      console.error(e);
-      toast.error("삭제 실패");
+     } catch (e) {
+       console.error(e);
+       toast.error("삭제 실패");
     }
-  };
+   };
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   
@@ -307,7 +315,12 @@ export default function Dashboard() {
             }}
           />
         )}
-
+        {itemToDelete !== null && (
+            <DeleteConfirmModal 
+                onClose={() => setItemToDelete(null)} // '취소' 버튼 또는 배경 클릭 시
+                onConfirm={confirmDelete} // '삭제' 버튼 클릭 시 confirmDelete 실행
+            />
+        )}
 
       </div>
     </div>
