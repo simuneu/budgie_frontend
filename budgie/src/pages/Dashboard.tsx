@@ -57,6 +57,27 @@ export default function Dashboard() {
     }
   };
 
+  //목표 수정
+  const updateGoal = async (amount: number) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    await axios.put(
+      `/api/budget/goal/${year}/${month}`,
+      { goalAmount: amount },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    toast.success("목표가 수정되었습니다!");
+    setShowModal(false);
+
+    fetchGoal();
+    fetchMonthlySummary();
+  } catch {
+    toast.error("목표 수정 실패");
+  }
+};
+
   // API: 월 소비 합계 조회
   const fetchMonthlySummary = async () => {
     try {
@@ -203,8 +224,12 @@ export default function Dashboard() {
         <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center">
           {showModal ? (
             <GoalModal
-              onClose={() => setShowModal(false)}
-              onSave={saveGoal}
+            existingGoal={goal}
+            onClose={() => setShowModal(false)}
+            onSave={(amount) => {
+              if (goal) updateGoal(amount);
+              else saveGoal(amount);
+           }}
             />
           ) : (
             <div className="bg-white/80 px-10 py-8 rounded-2xl shadow-xl text-center">
@@ -235,9 +260,15 @@ export default function Dashboard() {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-          <div className="bg-white/80  p-5 rounded-xl shadow">
+          <div className="bg-white/80  p-5 rounded-xl shadow relative">
             <p className="text-gray-600">월 목표 금액</p>
             <p className="text-2xl font-bold">{goal.goalAmount.toLocaleString()} 원</p>
+             <button
+                className="absolute top-3 right-3 text-sm text-pink-500 hover:text-teal-600"
+                onClick={() => setShowModal(true)}
+              >
+                수정
+              </button>
           </div>
 
           <div className="bg-white/80  p-5 rounded-xl shadow">
@@ -300,18 +331,13 @@ export default function Dashboard() {
           <StatisticsPanel year={year} month={month} />
         </div>
 
-        {showAddModal && selectedDate && (
-          <AddTransactionModal
-            transaction={editItem ?? undefined}  
-            date={selectedDate}
-            onClose={() => {
-              setShowAddModal(false);
-              setEditItem(null); // 닫을 때 초기화
-            }}
-            onSave={() => {
-              fetchTransactionsByDate(selectedDate);
-              fetchMonthlySummary();
-               refreshRecordedDays(); 
+        {showModal && (
+          <GoalModal
+            existingGoal={goal}
+            onClose={() => setShowModal(false)}
+            onSave={(amount) => {
+              if (goal) updateGoal(amount);
+              else saveGoal(amount);
             }}
           />
         )}

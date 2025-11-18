@@ -3,10 +3,11 @@ import { useState } from "react";
 interface GoalModalProps {
   onClose: () => void;
   onSave: (amount: number) => void;
+  existingGoal?: { goalAmount: number } | null; 
 }
 
-export default function GoalModal({ onClose, onSave }: GoalModalProps) {
-  const [amount, setAmount] = useState("");
+export default function GoalModal({ onClose, onSave, existingGoal }: GoalModalProps) {
+  const [amount, setAmount] = useState<number>(existingGoal?.goalAmount ?? 0);
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
@@ -14,7 +15,7 @@ export default function GoalModal({ onClose, onSave }: GoalModalProps) {
 
         {/* 제목 */}
         <h2 className="text-2xl font-bold mb-4 text-gray-800">
-          🐥 이번 달 목표 금액 설정
+           {existingGoal ? "🐥 목표 금액 수정" : "🐥 이번 달 목표 금액 설정"}
         </h2>
 
         <p className="text-gray-600 mb-6">
@@ -25,7 +26,7 @@ export default function GoalModal({ onClose, onSave }: GoalModalProps) {
         <input
           type="number"
           value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          onChange={(e) => setAmount(Number(e.target.value))}
           placeholder="예: 400000"
           className="w-full px-4 py-3 border rounded-xl focus:ring-2 
                      focus:ring-pink-300 focus:outline-none mb-6"
