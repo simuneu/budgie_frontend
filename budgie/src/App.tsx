@@ -30,7 +30,9 @@ export default function App() {
       }
     };
 
-    requestFcmToken();
+     navigator.serviceWorker.ready.then(() => {
+      requestFcmToken();
+    });
 
     // 포그라운드 알림 수신
      const unsubscribe = onMessage(messaging, (payload) => {

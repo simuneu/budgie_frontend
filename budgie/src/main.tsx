@@ -16,3 +16,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </React.StrictMode>,
 )
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/firebase-messaging-sw.js")
+    .then(() => {
+      // console.log("SW registered");
+    })
+    .catch(err => console.log("SW registration failed", err));
+}
+
