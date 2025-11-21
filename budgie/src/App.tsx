@@ -13,6 +13,9 @@ import { toast } from "react-toastify";
 export default function App() {
 
    useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken || accessToken === "null") return;
+
     const requestFcmToken = async () => {
       try {
         const token = await getToken(messaging, {
@@ -29,10 +32,13 @@ export default function App() {
         console.error("FCM token error:", err);
       }
     };
+    navigator.serviceWorker.ready.then(() => {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken || accessToken === "null") return;   // 로그인 안 되어 있으면 FCM 등록 금지
 
-     navigator.serviceWorker.ready.then(() => {
       requestFcmToken();
     });
+
 
     // 포그라운드 알림 수신
      const unsubscribe = onMessage(messaging, (payload) => {
@@ -47,9 +53,13 @@ export default function App() {
       });
     });
 
+   
+
     // 컴포넌트 unmount 시 이벤트 해제
     return () => unsubscribe();
   }, []);
+
+
 
   return (
       <Routes>
