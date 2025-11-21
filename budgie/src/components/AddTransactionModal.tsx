@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { CATEGORY_ICONS } from "../utils/categoryIcons";
 import { CATEGORY_LABELS } from "../utils/categoryLabel";
 import type { Transaction } from "../types/Transaction";
 import { toast } from "react-toastify";
 
 interface Props {
-  date: string;  // 선택된 날짜
+  date: string;
   onClose: () => void;
-  onSave: () => void; 
-  transaction?:Transaction;
+  onSave: () => void;
+  transaction?: Transaction;
 }
 
 interface Category {
@@ -25,7 +25,6 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
 
-  //수정모드일 경우 기존 데이터 채워넣기
   useEffect(() => {
     if (transaction) {
       setAmount(String(transaction.amount));
@@ -34,14 +33,25 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
     }
   }, [transaction]);
 
-  // 등록 버튼
   const handleSubmit = async () => {
+
     const token = localStorage.getItem("accessToken");
 
-    if (!categoryId || !amount) {
-       toast.error("카테고리와 금액은 필수입니다.");
+    if (!date) {
+      toast.error("날짜가 선택되지 않았습니다.");
       return;
     }
+
+    if (!categoryId || !amount) {
+      toast.error("카테고리와 금액은 필수입니다.");
+      return;
+    }
+
+      const cleanAmount = Number(amount.replace(/,/g, ""));
+      if (isNaN(cleanAmount)) {
+        toast.error("금액 형식이 올바르지 않습니다.");
+        return;
+      }
 
     const payload = {
       transactionDate: date,
@@ -52,22 +62,23 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
 
     try {
       if (isEditMode) {
-        // 수정 API
-        await axios.put(`/api/transactions/${transaction.transactionId}`, payload, {
+        await axios.put(`/api/transactions/${transaction!.transactionId}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
       } else {
-        // 등록API
         await axios.post("/api/transactions", payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
 
+      toast.success(isEditMode ? "수정되었습니다!" : "등록되었습니다!");
       onSave();
       onClose();
-    } catch (e) {
-      console.error(e);
-      toast.success("새 내역이 등록되었습니다!");
+
+    } catch (error) {
+      const err = error as AxiosError;
+      console.error("등록/수정 실패:", err.response?.data || err.message);
+      toast.error("등록/수정 중 문제가 발생했습니다.");
     }
   };
 
@@ -75,15 +86,15 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
     const token = localStorage.getItem("accessToken");
 
     const res = await axios.get("/api/categories", {
-        headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     setCategories(res.data);
-    };
+  };
 
-    useEffect(() => {
-        loadCategories();
-    }, []);
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
@@ -92,48 +103,41 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
           {isEditMode ? "내역 수정" : "소비 지출 등록"}
         </h2>
 
-        {/* 날짜 */}
         <p className="text-gray-600 mb-2">날짜: {date}</p>
 
         {/* 지출 카테고리 */}
         <label className="block mb-2 text-gray-700 font-semibold">지출 카테고리</label>
         <select
-        className="w-full border rounded p-2 mb-4"
-        value={categoryId ?? ""}
-        onChange={(e) => setCategoryId(Number(e.target.value))}
+          className="w-full border rounded p-2 mb-4"
+          value={categoryId ?? ""}
+          onChange={(e) => setCategoryId(Number(e.target.value))}
         >
-        <option value="">지출 카테고리 선택</option>
-
-        {categories
+          <option value="">지출 카테고리 선택</option>
+          {categories
             .filter((c) => c.budgetType === "EXP")
             .map((c) => (
-            <option key={c.categoryId} value={c.categoryId}>
+              <option key={c.categoryId} value={c.categoryId}>
                 {CATEGORY_ICONS[c.name]} {CATEGORY_LABELS[c.name]}
-            </option>
+              </option>
             ))}
         </select>
 
         {/* 수입 카테고리 */}
         <label className="block mb-2 text-gray-700 font-semibold mt-4">수입 카테고리</label>
         <select
-        className="w-full border rounded p-2 mb-4"
-        value={categoryId ?? ""}
-        onChange={(e) => setCategoryId(Number(e.target.value))}
+          className="w-full border rounded p-2 mb-4"
+          value={categoryId ?? ""}
+          onChange={(e) => setCategoryId(Number(e.target.value))}
         >
-        <option value="">수입 카테고리 선택</option>
-
-        {categories
+          <option value="">수입 카테고리 선택</option>
+          {categories
             .filter((c) => c.budgetType === "INCOME")
             .map((c) => (
-            <option key={c.categoryId} value={c.categoryId}>
+              <option key={c.categoryId} value={c.categoryId}>
                 {CATEGORY_ICONS[c.name]} {CATEGORY_LABELS[c.name]}
-            </option>
+              </option>
             ))}
         </select>
-
-
-
-
 
         {/* 금액 */}
         <label className="block mb-2 text-gray-700">금액</label>
@@ -154,19 +158,12 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
           placeholder="메모 입력"
         />
 
-        {/* 버튼 */}
         <div className="flex justify-end space-x-3">
-          <button
-            className="px-4 py-2 rounded bg-gray-300"
-            onClick={onClose}
-          >
+          <button className="px-4 py-2 rounded bg-gray-300" onClick={onClose}>
             취소
           </button>
 
-          <button
-            className="px-4 py-2 rounded bg-pink-500 text-white"
-            onClick={handleSubmit}
-          >
+          <button className="px-4 py-2 rounded bg-pink-500 text-white" onClick={handleSubmit}>
             {isEditMode ? "수정" : "저장"}
           </button>
         </div>

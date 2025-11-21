@@ -84,6 +84,9 @@ export default function Sidebar() {
       <a href="/dashboard" className="hover:text-blue-500">
         대시보드
       </a>
+      <a href="/analysis" className="hover:text-blue-500">
+          소비 분석
+      </a>
       <a href="/mypage" className="hover:text-blue-500">
         마이페이지
       </a>

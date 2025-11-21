@@ -210,6 +210,7 @@ export default function Dashboard() {
   };
 
   const [editItem, setEditItem] = useState<Transaction | null>(null);
+  
 
   // UI: 로딩 중
   if (loading)
@@ -347,7 +348,21 @@ export default function Dashboard() {
                 onConfirm={confirmDelete} // '삭제' 버튼 클릭 시 confirmDelete 실행
             />
         )}
-
+        {showAddModal && (
+          <AddTransactionModal
+            date={selectedDate!}
+            transaction={editItem ?? undefined}
+            onClose={() => {
+              setEditItem(null);
+              setShowAddModal(false);
+            }}
+            onSave={() => {
+              if (selectedDate) fetchTransactionsByDate(selectedDate);
+              fetchMonthlySummary();
+              refreshRecordedDays();
+            }}
+          />
+        )}
       </div>
     </div>
   );

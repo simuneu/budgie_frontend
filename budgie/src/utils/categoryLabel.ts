@@ -15,3 +15,4 @@ export const CATEGORY_LABELS: Record<string, string> = {
   SIDE_INCOME: "부수입",
   ETC: "기타",
 };
+
