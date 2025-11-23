@@ -14,6 +14,7 @@ export default function MainLayout() {
         from-teal-200 via-pink-100 to-white
         bg-[length:400%_400%]
         animate-gradient-move
+        relative
       "
     >
       {/* 상단 헤더: 모바일/데탑 공통 */}
@@ -33,7 +34,7 @@ export default function MainLayout() {
 
       {/* 모바일 슬라이드 사이드바 */}
       {open && (
-        <div className="fixed inset-0 z-40">
+        <div className="fixed inset-0 z-20">
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setOpen(false)}
