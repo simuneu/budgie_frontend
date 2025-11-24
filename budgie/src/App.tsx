@@ -9,6 +9,7 @@ import { messaging } from "./firebase";
 import axios from "axios";
 import { toast } from "react-toastify";
 import AnalysisPage from "./pages/AnalysisPage";
+import MyPage from "./pages/MyPage";
 
 
 export default function App() {
@@ -64,7 +65,7 @@ export default function App() {
 
   return (
       <Routes>
-        <Route path="/" element={<AuthPage />} />
+        <Route path="/auth" element={<AuthPage />} />
 
         <Route
           path="/"
@@ -76,7 +77,7 @@ export default function App() {
         >
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="analysis" element={<AnalysisPage />} />
-        {/* <Route path="mypage" element={<MyPage />} />  */}
+        <Route path="mypage" element={<MyPage />} /> 
         </Route>
       </Routes>
   );

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ConfirmModal from "./ConfirmModal";
 
@@ -54,7 +54,7 @@ export default function Sidebar() {
       setShowLogoutModal(false);
 
       // 로그인 페이지로 이동
-      navigate("/");
+      navigate("/auth");
     } catch{
       toast.error("로그아웃 실패");
     }
@@ -112,15 +112,17 @@ export default function Sidebar() {
 
       {/* 네비게이션 */}
       <nav className="flex flex-col gap-2 items-center text-center">
-        <a href="/dashboard" className="hover:text-blue-500">
+        <Link to="/dashboard" className="hover:text-blue-500">
           대시보드
-        </a>
-        <a href="/analysis" className="hover:text-blue-500">
-            소비 분석
-        </a>
-        <a href="/mypage" className="hover:text-blue-500">
+        </Link>
+
+        <Link to="/analysis" className="hover:text-blue-500">
+          소비 분석
+        </Link>
+
+        <Link to="/mypage" className="hover:text-blue-500">
           마이페이지
-        </a>
+        </Link>
         <button
           onClick={() => setShowLogoutModal(true)}
           className="mt-6 text-pink-500 hover:text-pink-600"
