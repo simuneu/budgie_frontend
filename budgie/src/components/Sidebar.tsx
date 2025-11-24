@@ -31,8 +31,29 @@ export default function Sidebar() {
   };
 
   useEffect(() => {
+  fetchMyInfo();
+
+  const handleStorage = (e: StorageEvent) => {
+    if (e.key === "nicknameChanged") {
+      fetchMyInfo();
+    }
+  };
+
+  const handleCustomEvent = () => {
     fetchMyInfo();
-  }, []);
+  };
+
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener("nicknameChanged", handleCustomEvent);
+
+  return () => {
+    window.removeEventListener("storage", handleStorage);
+    window.removeEventListener("nicknameChanged", handleCustomEvent);
+  };
+}, []);
+
+  
+  
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -54,7 +75,7 @@ export default function Sidebar() {
       setShowLogoutModal(false);
 
       // 로그인 페이지로 이동
-      navigate("/auth");
+      navigate("/");
     } catch{
       toast.error("로그아웃 실패");
     }
@@ -112,15 +133,15 @@ export default function Sidebar() {
 
       {/* 네비게이션 */}
       <nav className="flex flex-col gap-2 items-center text-center">
-        <Link to="/dashboard" className="hover:text-blue-500">
+        <Link to="/app/dashboard" className="hover:text-blue-500">
           대시보드
         </Link>
 
-        <Link to="/analysis" className="hover:text-blue-500">
+        <Link to="/app/analysis" className="hover:text-blue-500">
           소비 분석
         </Link>
 
-        <Link to="/mypage" className="hover:text-blue-500">
+        <Link to="/app/mypage" className="hover:text-blue-500">
           마이페이지
         </Link>
         <button

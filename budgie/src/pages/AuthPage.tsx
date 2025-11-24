@@ -108,7 +108,7 @@ export default function AuthPage() {
                   toast.success("로그인 성공!");
 
                   setTimeout(() => {
-                    navigate("/dashboard");
+                    navigate("/app/dashboard");
                   }, 800);
                 })
                 .catch(() => toast.error("로그인 실패! 이메일 또는 비밀번호를 확인하세요."));

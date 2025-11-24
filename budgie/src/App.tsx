@@ -65,10 +65,10 @@ export default function App() {
 
   return (
       <Routes>
-        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/" element={<AuthPage />} />
 
         <Route
-          path="/"
+          path="/app"
           element={
             <PrivateRoute>
               <MainLayout />
