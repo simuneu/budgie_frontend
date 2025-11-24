@@ -18,6 +18,12 @@ export default function AuthPage() {
   const [isVerified, setIsVerified] = useState(false);
   const [verifyMsg, setVerifyMsg] = useState("");
   const navigate = useNavigate();
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetCode, setResetCode] = useState("");
+  const [newPw, setNewPw] = useState("");
+  const [step, setStep] = useState(1);
+
 
   const resetInputs = () => {
     setEmail("");
@@ -130,7 +136,6 @@ export default function AuthPage() {
           }}
         >
           {!isLogin && (
-            <>
               <div>
                 <label className="block text-gray-600 mb-1">닉네임</label>
                 <input
@@ -141,7 +146,6 @@ export default function AuthPage() {
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
                 />
               </div>
-            </>
           )}
 
           <div>
@@ -237,6 +241,15 @@ export default function AuthPage() {
             {isLogin ? "로그인" : "회원가입"}
           </button>
         </form>
+        {isLogin && (
+          <button
+            type="button"
+            className="text-sm text-pink-500 mt-3 hover:underline w-full text-center"
+            onClick={() => setShowResetModal(true)}
+          >
+            비밀번호를 잊으셨나요?
+          </button>
+        )}
 
         {/* SNS 로그인 버튼 영역 */}
         <div className="mt-8">
@@ -284,9 +297,102 @@ export default function AuthPage() {
           </button>
         </p>
       </div>
+
+      {showResetModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4 z-50">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
+
+            <h3 className="text-2xl font-bold text-center mb-4">비밀번호 재설정</h3>
+
+            {step === 1 && (
+              <>
+                <label className="block text-gray-600 mb-1">이메일</label>
+                <input
+                  type="email"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  placeholder="이메일 입력"
+                  className="w-full px-4 py-2 border rounded-lg mb-4"
+                />
+
+                <button
+                  onClick={() => {
+                    axios.post("http://localhost:8080/api/auth/password/reset-request",
+                      { email: resetEmail }
+                    )
+                      .then(() => {
+                        toast.success("인증코드가 이메일로 전송되었습니다.");
+                        setStep(2);
+                      })
+                      .catch(() => toast.error("존재하지 않는 이메일입니다."));
+                  }}
+                  className="w-full py-2 bg-pink-400 text-white rounded-lg hover:bg-pink-500"
+                >
+                  인증 코드 보내기
+                </button>
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                <label className="block text-gray-600 mb-1">인증 코드</label>
+                <input
+                  type="text"
+                  value={resetCode}
+                  onChange={(e) => setResetCode(e.target.value)}
+                  placeholder="코드 입력"
+                  className="w-full px-4 py-2 border rounded-lg mb-4"
+                />
+
+                <label className="block text-gray-600 mb-1">새 비밀번호</label>
+                <input
+                  type="password"
+                  value={newPw}
+                  onChange={(e) => setNewPw(e.target.value)}
+                  placeholder="새 비밀번호"
+                  className="w-full px-4 py-2 border rounded-lg mb-4"
+                />
+
+                <button
+                  onClick={() => {
+                    axios.post("http://localhost:8080/api/auth/password/reset", {
+                      email: resetEmail,
+                      code: resetCode,
+                      newPassword: newPw,
+                    })
+                      .then(() => {
+                        toast.success("비밀번호가 성공적으로 변경되었습니다.");
+                        setShowResetModal(false);
+                        setStep(1);
+                        setResetEmail("");
+                        setResetCode("");
+                        setNewPw("");
+                      })
+                      .catch(() => toast.error("코드 또는 비밀번호를 확인해주세요."));
+                  }}
+                  className="w-full py-2 bg-pink-400 text-white rounded-lg hover:bg-pink-500"
+                >
+                  비밀번호 변경 완료
+                </button>
+              </>
+            )}
+
+            <button
+              onClick={() => {
+                setShowResetModal(false);
+                setStep(1);
+              }}
+              className="block w-full text-center mt-4 text-gray-500 hover:underline"
+            >
+              닫기
+            </button>
+
+          </div>
+        </div>
+      )}
+
     </div>
+    
   );
 }
 
-//버튼 클릭 후엔 인풋창 비워주기
-//alert토스트로 변경하기
