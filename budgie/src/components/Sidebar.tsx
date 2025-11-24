@@ -1,5 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import ConfirmModal from "./ConfirmModal";
 
 interface UserInfo {
   userId: number;
@@ -10,6 +13,8 @@ interface UserInfo {
 
 export default function Sidebar() {
   const [user, setUser] = useState<UserInfo | null>(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const navigate = useNavigate();
 
   const fetchMyInfo = async () => {
     try {
@@ -28,6 +33,32 @@ export default function Sidebar() {
   useEffect(() => {
     fetchMyInfo();
   }, []);
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "/api/auth/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+
+      // 토큰 삭제
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+
+      toast.success("로그아웃 되었습니다.");
+
+      setShowLogoutModal(false);
+
+      // 로그인 페이지로 이동
+      navigate("/");
+    } catch{
+      toast.error("로그아웃 실패");
+    }
+  };
 
   return (
     <div className="
@@ -81,16 +112,30 @@ export default function Sidebar() {
 
       {/* 네비게이션 */}
       <nav className="flex flex-col gap-2 items-center text-center">
-      <a href="/dashboard" className="hover:text-blue-500">
-        대시보드
-      </a>
-      <a href="/analysis" className="hover:text-blue-500">
-          소비 분석
-      </a>
-      <a href="/mypage" className="hover:text-blue-500">
-        마이페이지
-      </a>
-</nav>
+        <a href="/dashboard" className="hover:text-blue-500">
+          대시보드
+        </a>
+        <a href="/analysis" className="hover:text-blue-500">
+            소비 분석
+        </a>
+        <a href="/mypage" className="hover:text-blue-500">
+          마이페이지
+        </a>
+        <button
+          onClick={() => setShowLogoutModal(true)}
+          className="mt-6 text-pink-500 hover:text-pink-600"
+        >
+          로그아웃
+        </button>
+      </nav>
+
+      {/*로그아웃 모달 */}
+      {showLogoutModal && (
+        <ConfirmModal
+          onConfirm={handleLogout}
+          onCancel={() => setShowLogoutModal(false)}
+        />
+      )}
     </div>
   );
 }
