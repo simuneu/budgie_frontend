@@ -23,6 +23,8 @@ export default function AuthPage() {
   const [resetCode, setResetCode] = useState("");
   const [newPw, setNewPw] = useState("");
   const [step, setStep] = useState(1);
+  const [newPwConfirm, setNewPwConfirm] = useState("");
+
 
 
   const resetInputs = () => {
@@ -353,8 +355,32 @@ export default function AuthPage() {
                   className="w-full px-4 py-2 border rounded-lg mb-4"
                 />
 
+                {/* 비밀번호 확인 input 추가 */}
+                <label className="block text-gray-600 mb-1">새 비밀번호 확인</label>
+                <input
+                  type="password"
+                  value={newPwConfirm}
+                  onChange={(e) => setNewPwConfirm(e.target.value)}
+                  placeholder="새 비밀번호 확인"
+                  className="w-full px-4 py-2 border rounded-lg mb-4"
+                />
+
                 <button
                   onClick={() => {
+                    //  비밀번호 정책 검증
+                    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
+
+                    if (!passwordRegex.test(newPw)) {
+                      toast.error("비밀번호는 8자 이상, 영문/숫자/특수문자를 포함해야 합니다.");
+                      return;
+                    }
+
+                    //  비밀번호 일치 검증
+                    if (newPw !== newPwConfirm) {
+                      toast.error("새 비밀번호가 일치하지 않습니다.");
+                      return;
+                    }
+
                     axios.post("http://localhost:8080/api/auth/password/reset", {
                       email: resetEmail,
                       code: resetCode,
@@ -367,6 +393,7 @@ export default function AuthPage() {
                         setResetEmail("");
                         setResetCode("");
                         setNewPw("");
+                        setNewPwConfirm("");
                       })
                       .catch(() => toast.error("코드 또는 비밀번호를 확인해주세요."));
                   }}
