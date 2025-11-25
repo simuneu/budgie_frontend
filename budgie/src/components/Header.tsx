@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../axiosConfig";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -20,41 +20,68 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // 알림 불러오기
+  // 🔥 알림 전체 가져오기
   const fetchAlerts = async () => {
     try {
       const res = await axios.get("/api/alert");
       setAlerts(res.data);
-      setUnread(res.data.filter((a: Alert) => !a.read).length);
     } catch (err) {
-      console.error(err);
+      console.error("알림 목록 불러오기 실패:", err);
     }
   };
 
-  // 읽음 처리
+  // 🔥 미읽음 개수 가져오기
+  const fetchUnreadCount = async () => {
+    try {
+      const res = await axios.get("/api/alert/unread-count");
+      setUnread(res.data);
+    } catch (err) {
+      console.error("미읽음 카운트 실패:", err);
+    }
+  };
+
+  // 🔥 단건 읽음 처리
   const markAsRead = async (id: number) => {
     try {
       await axios.post(`/api/alert/${id}/read`);
-      fetchAlerts();
-      setOpen(false); // 읽으면 닫히게
+
+      setAlerts((prev) =>
+        prev.map((a) => (a.alertId === id ? { ...a, read: true } : a))
+      );
+
+      fetchUnreadCount();
+      setOpen(false);
     } catch (err) {
-      console.error(err);
+      console.error("단건 읽음 실패:", err);
     }
   };
 
-  // 처음 로드시 알림 불러오기 (로그인 상태만)
-  useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+  // 🔥 전체 읽음 처리
+  const markAllAsRead = async () => {
+    try {
+      await axios.put("/api/alert/read-all");
 
-    if (!accessToken || accessToken === "null" || accessToken === "undefined") {
-      console.log("로그인 안됨 → 알림 API 호출하지 않음");
+      setAlerts((prev) => prev.map((a) => ({ ...a, read: true })));
+      setUnread(0);
+    } catch (err) {
+      console.error("전체 읽음 실패:", err);
+    }
+  };
+
+  // 초기 로딩
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      console.log("로그인 안됨 → 알림 API 미호출");
       return;
     }
 
     fetchAlerts();
+    fetchUnreadCount();
   }, []);
 
-  // 커튼 밖 클릭 시 닫기
+  // 패널 밖 클릭 시 닫기
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
@@ -62,11 +89,24 @@ export default function Header({ onMenuClick }: HeaderProps) {
       }
     };
 
-    if (open) {
-      window.addEventListener("click", handleClick);
-    }
+    if (open) window.addEventListener("click", handleClick);
     return () => window.removeEventListener("click", handleClick);
   }, [open]);
+
+  // 🔥🔥 FCM → Header 갱신 이벤트 수신 (방법 A 핵심)
+  useEffect(() => {
+    const handler = () => {
+      console.log("🔄 alert-update 이벤트 감지 → Header 재로드");
+      fetchAlerts();
+      fetchUnreadCount();
+    };
+
+    window.addEventListener("alert-update", handler);
+
+    return () => {
+      window.removeEventListener("alert-update", handler);
+    };
+  }, []);
 
   return (
     <>
@@ -80,31 +120,30 @@ export default function Header({ onMenuClick }: HeaderProps) {
           z-[9999]
         "
       >
-        {/* 좌측 버튼 */}
         <div className="w-10 flex md:hidden">
-          <button onClick={onMenuClick} className="text-2xl font-bold text-gray-500">
+          <button
+            onClick={onMenuClick}
+            className="text-2xl font-bold text-gray-500"
+          >
             ☰
           </button>
         </div>
 
-        {/* 중앙 로고 */}
         <div className="flex-1 flex justify-center">
           <h1 className="text-lg font-semibold text-gray-600">BUDGIE</h1>
         </div>
 
-        {/* 오른쪽 알림 */}
         <div className="w-10 flex justify-end relative">
           <button
             className="text-2xl relative"
             onClick={(e) => {
               e.stopPropagation();
-              setOpen((prev) => !prev);
+              setOpen(!open);
             }}
           >
             🔔
           </button>
 
-          {/* 읽지 않은 개수 */}
           {unread > 0 && (
             <span
               className="
@@ -120,7 +159,6 @@ export default function Header({ onMenuClick }: HeaderProps) {
         </div>
       </header>
 
-      {/* 🔥 Portal 사용해서 Header 밖에 렌더링되도록 고정 */}
       {open &&
         createPortal(
           <div
@@ -135,18 +173,35 @@ export default function Header({ onMenuClick }: HeaderProps) {
               z-[99999]
             "
           >
-            <h3 className="font-semibold text-gray-700 mb-2">알림</h3>
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="font-semibold text-gray-700">알림</h3>
+
+              {alerts.length > 0 && unread > 0 && (
+                <button
+                  onClick={markAllAsRead}
+                  className="text-xs text-gray-500 hover:text-gray-700"
+                >
+                  전체 읽음
+                </button>
+              )}
+            </div>
 
             {alerts.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-4">알림이 없어요</p>
+              <p className="text-sm text-gray-400 text-center py-4">
+                알림이 없어요
+              </p>
             ) : (
               alerts.map((a) => (
                 <div
                   key={a.alertId}
                   className={`
-                   p-2 rounded-lg cursor-pointer transition-colors
-                    text-sm font-normal leading-snug
-                    ${a.read ? "bg-gray-50 text-gray-400" : "bg-pink-50 text-gray-600 hover:bg-pink-100"}
+                    p-2 rounded-lg cursor-pointer transition-colors
+                    text-sm
+                    ${
+                      a.read
+                        ? "bg-gray-50 text-gray-400"
+                        : "bg-pink-50 text-gray-600 hover:bg-pink-100"
+                    }
                   `}
                   onClick={() => markAsRead(a.alertId)}
                 >

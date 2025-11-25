@@ -46,6 +46,10 @@ export default function App() {
      const unsubscribe = onMessage(messaging, (payload) => {
       console.log("Foreground message:", payload);
 
+      // 1) Header에게 알림 업데이트 이벤트 전달
+      window.dispatchEvent(new Event("alert-update"));
+
+      // 2) 토스트 알림 보여주기
       const title = payload.data?.title ?? "알림";
       const body = payload.data?.body ?? "";
 
