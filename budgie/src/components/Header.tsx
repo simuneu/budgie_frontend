@@ -20,7 +20,14 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // 🔥 알림 전체 가져오기
+  //알림 지우기
+  const deleteAlert = async (id: number) => {
+  await axios.delete(`/api/alert/${id}`);
+  fetchAlerts();
+  fetchUnreadCount();
+};
+
+  // 알림 전체 가져오기
   const fetchAlerts = async () => {
     try {
       const res = await axios.get("/api/alert");
@@ -30,7 +37,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
     }
   };
 
-  // 🔥 미읽음 개수 가져오기
+  // 미읽음 개수 가져오기
   const fetchUnreadCount = async () => {
     try {
       const res = await axios.get("/api/alert/unread-count");
@@ -40,7 +47,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
     }
   };
 
-  // 🔥 단건 읽음 처리
+  // 단건 읽음 처리
   const markAsRead = async (id: number) => {
     try {
       await axios.post(`/api/alert/${id}/read`);
@@ -56,7 +63,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
     }
   };
 
-  // 🔥 전체 읽음 처리
+  // 전체 읽음 처리
   const markAllAsRead = async () => {
     try {
       await axios.put("/api/alert/read-all");
@@ -93,7 +100,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
     return () => window.removeEventListener("click", handleClick);
   }, [open]);
 
-  // 🔥🔥 FCM → Header 갱신 이벤트 수신 (방법 A 핵심)
+  // FCM → Header 갱신 이벤트 수신 (방법 A 핵심)
   useEffect(() => {
     const handler = () => {
       console.log("🔄 alert-update 이벤트 감지 → Header 재로드");
@@ -166,7 +173,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
             onClick={(e) => e.stopPropagation()}
             className="
               fixed top-14 right-4
-              w-56 max-h-72
+              w-80 max-h-72
               bg-white border shadow-lg rounded-xl
               p-3
               overflow-y-auto
@@ -192,21 +199,37 @@ export default function Header({ onMenuClick }: HeaderProps) {
               </p>
             ) : (
               alerts.map((a) => (
-                <div
-                  key={a.alertId}
-                  className={`
-                    p-2 rounded-lg cursor-pointer transition-colors
-                    text-sm
-                    ${
-                      a.read
-                        ? "bg-gray-50 text-gray-400"
-                        : "bg-pink-50 text-gray-600 hover:bg-pink-100"
-                    }
-                  `}
+              <div
+                key={a.alertId}
+                className={`
+                  relative
+                  p-2 rounded-lg transition-colors
+                  text-sm
+                  ${a.read ? "bg-gray-50 text-gray-400" : "bg-pink-50 text-gray-600 hover:bg-pink-100"}
+                `}
+              >
+                {/* 메시지 부분 */}
+                 <span
                   onClick={() => markAsRead(a.alertId)}
+                  className="block pr-6 whitespace-pre-line"
+                  dangerouslySetInnerHTML={{ __html: a.message }}
+                ></span>
+
+                {/* 오른쪽 상단 고정 X 버튼 */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteAlert(a.alertId);
+                  }}
+                  className="
+                    absolute top-1 right-1
+                    text-gray-400 hover:text-red-500
+                    text-xs
+                  "
                 >
-                  {a.message}
-                </div>
+                  ✕
+                </button>
+              </div>
               ))
             )}
           </div>,
