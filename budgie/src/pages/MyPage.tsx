@@ -105,7 +105,7 @@ export default function MyPage() {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
 
-      navigate("/auth");
+      navigate("/");
 
     } catch {
       toast.error("비밀번호가 일치하지 않습니다.");
@@ -145,7 +145,8 @@ console.log("confirm state:", passwordNewConfirm);
         { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        toast.success("비밀번호가 변경되었습니다!");
+         toast.success("비밀번호가 성공적으로 변경되었습니다! 🎉");
+         //입력초기화
         setPasswordOld("");
         setPasswordNew("");
         setPasswordNewConfirm("");
