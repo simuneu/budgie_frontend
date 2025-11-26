@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:8080"; // 배포 주소 나중에 변경
+axios.defaults.baseURL = "/api"; // 배포 주소 나중에 변경
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use((config) => {

@@ -1,4 +1,10 @@
-export default function ConfirmDeleteModal({ onConfirm, onCancel }) {
+interface Props {
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+export default function ConfirmDeleteModal({ onConfirm, onCancel }:Props) {
+  
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[9999]">
       <div className="bg-white p-6 rounded-xl shadow-xl w-72 text-center">

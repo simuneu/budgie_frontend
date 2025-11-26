@@ -101,7 +101,7 @@ export default function AuthPage() {
             if (isLogin) {
               // 로그인 요청
               axios
-                .post("http://localhost:8080/api/auth/login", { email, password })
+                .post("/api/auth/login", { email, password })
                 .then((res: { data: { accessToken: string; refreshToken: string } }) => {
                   localStorage.setItem("accessToken", res.data.accessToken);
                   localStorage.setItem("refreshToken", res.data.refreshToken);
@@ -127,7 +127,7 @@ export default function AuthPage() {
 
               // 회원가입 요청
               axios
-                .post("http://localhost:8080/api/auth/signup", { email, password, nickname })
+                .post("/api/auth/signup", { email, password, nickname })
                  .then(() => {
                   toast.success("회원가입 성공! 로그인 페이지로 이동합니다.");
                   resetInputs();
@@ -191,7 +191,7 @@ export default function AuthPage() {
                 type="button"
                 onClick={() => {
                   axios
-                    .post("http://localhost:8080/api/auth/email/send", { email })
+                    .post("/api/auth/email/send", { email })
                     .then(() => toast.info("인증 이메일이 발송되었습니다."))
                     .catch(() => toast.error("이메일 발송 실패"));
                 }}
@@ -212,7 +212,7 @@ export default function AuthPage() {
                 type="button"
                 onClick={() => {
                   axios
-                    .post("http://localhost:8080/api/auth/email/verify", { email, code })
+                    .post("/api/auth/email/verify", { email, code })
                     .then(() => {
                       setIsVerified(true);
                       setVerifyMsg("✅ 인증 성공!✅");
@@ -261,7 +261,7 @@ export default function AuthPage() {
             <button
               type="button"
               onClick={() => {
-                window.location.href = "http://localhost:8080/api/auth/naver/loginstart";              }}
+                window.location.href = "/api/auth/naver/loginstart";              }}
               className="focus:outline-none"
             >
               <img
@@ -275,7 +275,7 @@ export default function AuthPage() {
             <button
               type="button"
               onClick={() => {
-                window.location.href = "http://localhost:8080/api/auth/kakao/loginstart";
+                window.location.href = "/api/auth/kakao/loginstart";
               }}
               className="focus:outline-none"
             >
@@ -319,7 +319,7 @@ export default function AuthPage() {
 
                 <button
                   onClick={() => {
-                    axios.post("http://localhost:8080/api/auth/password/reset-request",
+                    axios.post("/api/auth/password/reset-request",
                       { email: resetEmail }
                     )
                       .then(() => {
@@ -381,7 +381,7 @@ export default function AuthPage() {
                       return;
                     }
 
-                    axios.post("http://localhost:8080/api/auth/password/reset", {
+                    axios.post("/api/auth/password/reset", {
                       email: resetEmail,
                       code: resetCode,
                       newPassword: newPw,

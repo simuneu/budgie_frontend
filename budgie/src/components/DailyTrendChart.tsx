@@ -29,7 +29,7 @@ export default function DailyTrendChart({ data }: DailyTrendChartProps) {
           <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
             <XAxis
             dataKey="day"
-            interval="auto" 
+            interval={0} 
             tick={{ fontSize: 12 }}
             />
 
@@ -49,7 +49,12 @@ export default function DailyTrendChart({ data }: DailyTrendChartProps) {
             <LabelList
               dataKey="totalAmount"
               position="top"
-              formatter={(value: number) => value.toLocaleString()}
+              formatter={(value: unknown) => {
+                if (typeof value === "number") return value.toLocaleString();
+                if (typeof value === "string") return Number(value).toLocaleString();
+
+                return "";
+              }}
               style={{ fill: "#444", fontSize: 12, fontWeight: 500 }}
             />
           </Bar>

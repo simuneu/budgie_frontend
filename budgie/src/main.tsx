@@ -1,11 +1,10 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './App.css'
 import axios from 'axios';
 import { BrowserRouter } from "react-router-dom";
 import App from './App';
 
-axios.defaults.baseURL = "http://localhost:8080";
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "/api";
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use(
@@ -20,16 +19,12 @@ axios.interceptors.request.use(
 );
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
 )
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/firebase-messaging-sw.js")
-    .then(() => {
-      // console.log("SW registered");
-    })
     .catch(err => console.log("SW registration failed", err));
 }
-

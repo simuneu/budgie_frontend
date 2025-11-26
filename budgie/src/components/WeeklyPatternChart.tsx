@@ -12,7 +12,7 @@ import {
 const WEEK = ["월", "화", "수", "목", "금", "토", "일"];
 
 interface WeeklyExpense {
-  weekly: number; // 1 = 월, 7 = 일
+  weekday: number; 
   totalAmount: number;
 }
 
@@ -29,7 +29,7 @@ export default function WeeklyPatternChart({ data }: WeeklyPatternChartProps) {
 
   // 2) 실제 데이터 덮어쓰기
   data.forEach((item) => {
-    const idx = item.weekly - 1;
+    const idx = item.weekday - 1;
     if (idx >= 0 && idx < 7) {
       base[idx].totalAmount = item.totalAmount;
     }
@@ -86,7 +86,11 @@ if (maxDay.totalAmount === 0) {
             <LabelList
               dataKey="amount"
               position="top"
-              formatter={(v: number) => v.toLocaleString()}
+               formatter={(value: unknown) => {
+                if (typeof value === "number") return value.toLocaleString();
+                if (typeof value === "string") return Number(value).toLocaleString();
+                return "";
+              }}
               style={{ fill: "#444", fontSize: 12, fontWeight: 500 }}
             />
           </Bar>

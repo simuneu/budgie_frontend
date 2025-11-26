@@ -1,6 +1,10 @@
 import ReactDOM from "react-dom";
+interface Props {
+  onConfirm: () => void;
+  onCancel: () => void;
+}
 
-export default function ConfirmModal({ onConfirm, onCancel }) {
+export default function ConfirmModal({ onConfirm, onCancel }:Props) {
   return ReactDOM.createPortal(
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[9999]">
       <div className="bg-white p-6 rounded-xl shadow-xl w-80 text-center">

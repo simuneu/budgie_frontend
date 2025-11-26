@@ -1,5 +1,5 @@
+// firebase.ts
 import { initializeApp } from "firebase/app";
-import { getMessaging } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBxEPLFZVfEA8l36zatDh6sbh4AFmlzvnI",
@@ -11,6 +11,23 @@ const firebaseConfig = {
   measurementId: "G-742192J19J"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-export const messaging = getMessaging(app);
+export const app = initializeApp(firebaseConfig);
+
+export async function getMessagingSafe() {
+  const isSupportedEnv =
+    window.location.protocol === "https:" ||
+    window.location.hostname === "localhost";
+
+  if (!isSupportedEnv) {
+    console.log("⚠️ FCM disabled (HTTP environment)");
+    return null;
+  }
+
+  try {
+    const { getMessaging } = await import("firebase/messaging");
+    return getMessaging(app);
+  } catch (err) {
+    console.error("Messaging init error:", err);
+    return null;
+  }
+}
