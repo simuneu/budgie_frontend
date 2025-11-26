@@ -4,7 +4,7 @@ import axios from 'axios';
 import { BrowserRouter } from "react-router-dom";
 import App from './App';
 
-axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "/api";
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "";
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use(
