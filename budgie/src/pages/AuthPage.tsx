@@ -101,7 +101,7 @@ export default function AuthPage() {
             if (isLogin) {
               // 로그인 요청
               axios
-                .post("/api/auth/login", { email, password })
+                .post("/auth/login", { email, password })
                 .then((res: { data: { accessToken: string; refreshToken: string } }) => {
                   localStorage.setItem("accessToken", res.data.accessToken);
                   localStorage.setItem("refreshToken", res.data.refreshToken);
@@ -127,7 +127,7 @@ export default function AuthPage() {
 
               // 회원가입 요청
               axios
-                .post("/api/auth/signup", { email, password, nickname })
+                .post("/auth/signup", { email, password, nickname })
                  .then(() => {
                   toast.success("회원가입 성공! 로그인 페이지로 이동합니다.");
                   resetInputs();
@@ -191,7 +191,7 @@ export default function AuthPage() {
                 type="button"
                 onClick={() => {
                   axios
-                    .post("/api/auth/email/send", { email })
+                    .post("/auth/email/send", { email })
                     .then(() => toast.info("인증 이메일이 발송되었습니다."))
                     .catch(() => toast.error("이메일 발송 실패"));
                 }}
@@ -212,7 +212,7 @@ export default function AuthPage() {
                 type="button"
                 onClick={() => {
                   axios
-                    .post("/api/auth/email/verify", { email, code })
+                    .post("/auth/email/verify", { email, code })
                     .then(() => {
                       setIsVerified(true);
                       setVerifyMsg("✅ 인증 성공!✅");
@@ -319,7 +319,7 @@ export default function AuthPage() {
 
                 <button
                   onClick={() => {
-                    axios.post("/api/auth/password/reset-request",
+                    axios.post("/auth/password/reset-request",
                       { email: resetEmail }
                     )
                       .then(() => {
@@ -381,7 +381,7 @@ export default function AuthPage() {
                       return;
                     }
 
-                    axios.post("/api/auth/password/reset", {
+                    axios.post("/auth/password/reset", {
                       email: resetEmail,
                       code: resetCode,
                       newPassword: newPw,

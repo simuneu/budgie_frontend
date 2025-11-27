@@ -19,7 +19,7 @@ export default function Sidebar() {
   const fetchMyInfo = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await axios.get("/api/users/me", {
+      const res = await axios.get("/users/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,7 +57,7 @@ export default function Sidebar() {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "/api/auth/logout",
+        "/auth/logout",
         {},
         {
           headers: {

@@ -42,13 +42,13 @@ export default function StatisticsPanel({ year, month }: Props) {
     try {
       const token = localStorage.getItem("accessToken");
 
-      const exp = await axios.get("/api/transactions/summary/category", {
+      const exp = await axios.get("/transactions/summary/category", {
         params: { year, month },
         headers: { Authorization: `Bearer ${token}` },
       });
 
       const income = await axios.get(
-        "/api/transactions/summary/category/income",
+        "/transactions/summary/category/income",
         {
           params: { year, month },
           headers: { Authorization: `Bearer ${token}` },

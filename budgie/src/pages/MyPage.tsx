@@ -24,7 +24,7 @@ export default function MyPage() {
   // 유저 정보 불러오기
   const fetchInfo = async () => {
     try {
-      const res = await axios.get("/api/users/me", {
+      const res = await axios.get("/users/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setNickname(res.data.nickname);
@@ -46,7 +46,7 @@ export default function MyPage() {
     try {
         // 비밀번호 검증용 요청
         await axios.post(
-        "/api/auth/check-password",
+        "/auth/check-password",
         { password: pw },
         { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -73,7 +73,7 @@ export default function MyPage() {
 
     try {
       await axios.put(
-        "/api/users/nickname",
+        "/users/nickname",
         { nickname: newNickname },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -95,7 +95,7 @@ export default function MyPage() {
     }
 
     try {
-      await axios.delete("/api/auth/delete", {
+      await axios.delete("/auth/delete", {
         headers: { Authorization: `Bearer ${token}` },
         data: { password: deletePw },
       });
@@ -137,7 +137,7 @@ console.log("confirm state:", passwordNewConfirm);
 
     try {
         await axios.put(
-        "/api/users/password",
+        "/users/password",
         {
             currentPassword: passwordOld,
             newPassword: passwordNew,

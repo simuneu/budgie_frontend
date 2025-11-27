@@ -22,7 +22,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
   //알림 지우기
   const deleteAlert = async (id: number) => {
-  await axios.delete(`/api/alert/${id}`);
+  await axios.delete(`/alert/${id}`);
   fetchAlerts();
   fetchUnreadCount();
 };
@@ -30,7 +30,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
   // 알림 전체 가져오기
   const fetchAlerts = async () => {
     try {
-      const res = await axios.get("/api/alert");
+      const res = await axios.get("/alert");
       setAlerts(res.data);
     } catch (err) {
       console.error("알림 목록 불러오기 실패:", err);
@@ -40,7 +40,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
   // 미읽음 개수 가져오기
   const fetchUnreadCount = async () => {
     try {
-      const res = await axios.get("/api/alert/unread-count");
+      const res = await axios.get("/alert/unread-count");
       setUnread(res.data);
     } catch (err) {
       console.error("미읽음 카운트 실패:", err);
@@ -50,7 +50,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
   // 단건 읽음 처리
   const markAsRead = async (id: number) => {
     try {
-      await axios.post(`/api/alert/${id}/read`);
+      await axios.post(`/alert/${id}/read`);
 
       setAlerts((prev) =>
         prev.map((a) => (a.alertId === id ? { ...a, read: true } : a))
@@ -66,7 +66,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
   // 전체 읽음 처리
   const markAllAsRead = async () => {
     try {
-      await axios.put("/api/alert/read-all");
+      await axios.put("/alert/read-all");
 
       setAlerts((prev) => prev.map((a) => ({ ...a, read: true })));
       setUnread(0);

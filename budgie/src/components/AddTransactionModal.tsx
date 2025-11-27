@@ -62,11 +62,11 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
 
     try {
       if (isEditMode) {
-        await axios.put(`/api/transactions/${transaction!.transactionId}`, payload, {
+        await axios.put(`/transactions/${transaction!.transactionId}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
       } else {
-        await axios.post("/api/transactions", payload, {
+        await axios.post("/transactions", payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
@@ -85,7 +85,7 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
   const loadCategories = async () => {
     const token = localStorage.getItem("accessToken");
 
-    const res = await axios.get("/api/categories", {
+    const res = await axios.get("/categories", {
       headers: { Authorization: `Bearer ${token}` },
     });
 

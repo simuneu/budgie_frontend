@@ -44,7 +44,7 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem("accessToken");
 
-      const res = await axios.get("/api/budget/goal", {
+      const res = await axios.get("/budget/goal", {
         params: { year, month },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -63,7 +63,7 @@ export default function Dashboard() {
     const token = localStorage.getItem("accessToken");
 
     await axios.put(
-      `/api/budget/goal/${year}/${month}`,
+      `/budget/goal/${year}/${month}`,
       { goalAmount: amount },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -83,7 +83,7 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem("accessToken");
 
-      const res = await axios.get("/api/transactions/summary", {
+      const res = await axios.get("/transactions/summary", {
         params: { year, month },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -100,7 +100,7 @@ export default function Dashboard() {
       const token = localStorage.getItem("accessToken");
 
       await axios.post(
-        "/api/budget/goal",
+        "/budget/goal",
         { year, month, goalAmount: amount },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -119,7 +119,7 @@ export default function Dashboard() {
   const token = localStorage.getItem("accessToken");
 
   axios
-    .get(`/api/transactions/days`, {
+    .get(`/transactions/days`, {
       params: { year, month },
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -141,7 +141,7 @@ export default function Dashboard() {
   const refreshRecordedDays = () => {
   const token = localStorage.getItem("accessToken");
   axios
-    .get("/api/transactions/days", {
+    .get("/transactions/days", {
       params: { year, month },
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -162,7 +162,7 @@ export default function Dashboard() {
     const token = localStorage.getItem("accessToken");
 
     try {
-      await axios.delete(`/api/transactions/${id}`, {
+      await axios.delete(`/transactions/${id}`, {
          headers: {
            Authorization: `Bearer ${token}`,
          },
@@ -193,7 +193,7 @@ export default function Dashboard() {
       const token = localStorage.getItem("accessToken");
       const [yearStr, monthStr, dayStr] = date.split("-");
 
-      const res = await axios.get("/api/transactions", {
+      const res = await axios.get("/transactions", {
         params: {
           year: Number(yearStr),
           month: Number(monthStr),
