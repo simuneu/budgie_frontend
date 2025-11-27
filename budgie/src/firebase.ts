@@ -19,15 +19,15 @@ export async function getMessagingSafe() {
     window.location.hostname === "localhost";
 
   if (!isSupportedEnv) {
-    console.log("⚠️ FCM disabled (HTTP environment)");
+    // console.log("⚠️ FCM disabled (HTTP environment)");
     return null;
   }
 
   try {
     const { getMessaging } = await import("firebase/messaging");
     return getMessaging(app);
-  } catch (err) {
-    console.error("Messaging init error:", err);
+  } catch {
+    // console.error("Messaging init error:", err);
     return null;
   }
 }

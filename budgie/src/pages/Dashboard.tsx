@@ -176,8 +176,10 @@ export default function Dashboard() {
       fetchMonthlySummary();
       refreshRecordedDays();
      } catch (e) {
-       console.error(e);
-       toast.error("삭제 실패");
+      if (import.meta.env.DEV) {
+        console.error("삭제 실패:", e);
+      }
+      toast.error("삭제 실패");
     }
    };
 
@@ -204,7 +206,9 @@ export default function Dashboard() {
 
       setTransactions(res.data || []);
     } catch (e) {
-      console.error(e);
+      if (import.meta.env.DEV) {
+        console.error("거래 내역 불러오기 실패:", e);
+      }
       setTransactions([]);
     }
   };

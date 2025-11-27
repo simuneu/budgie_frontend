@@ -17,18 +17,21 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   const fetchMyInfo = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const res = await axios.get("/users/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUser(res.data);
-    } catch (err) {
-      console.error("유저 정보 불러오기 실패", err);
+  try {
+    const token = localStorage.getItem("accessToken");
+    const res = await axios.get("/users/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setUser(res.data);
+  } catch (err) {
+    if (import.meta.env.DEV) {
+      console.error("유저 정보 불러오기 실패:", err);
     }
-  };
+  }
+};
+
 
   useEffect(() => {
   fetchMyInfo();
@@ -88,7 +91,8 @@ export default function Sidebar() {
         bg-white 
         backdrop-blur 
         shadow-lg 
-        min-h-screen 
+        overflow-y-auto
+        h-full   
         px-6 py-8 
         relative 
         z-30

@@ -1,6 +1,7 @@
 import axios from "../axiosConfig";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { Link } from "react-router-dom";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -29,13 +30,16 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
   // 알림 전체 가져오기
   const fetchAlerts = async () => {
-    try {
-      const res = await axios.get("/alert");
-      setAlerts(res.data);
-    } catch (err) {
+  try {
+    const res = await axios.get("/alert");
+    setAlerts(res.data);
+  } catch (err) {
+    if (import.meta.env.DEV) {
       console.error("알림 목록 불러오기 실패:", err);
     }
-  };
+  }
+};
+
 
   // 미읽음 개수 가져오기
   const fetchUnreadCount = async () => {
@@ -43,7 +47,9 @@ export default function Header({ onMenuClick }: HeaderProps) {
       const res = await axios.get("/alert/unread-count");
       setUnread(res.data);
     } catch (err) {
-      console.error("미읽음 카운트 실패:", err);
+      if (import.meta.env.DEV) {
+        console.error("미읽음 카운트 실패:", err);
+      }
     }
   };
 
@@ -59,7 +65,9 @@ export default function Header({ onMenuClick }: HeaderProps) {
       fetchUnreadCount();
       setOpen(false);
     } catch (err) {
-      console.error("단건 읽음 실패:", err);
+      if (import.meta.env.DEV) {
+        console.error("단건 읽음 실패:", err);
+      }
     }
   };
 
@@ -71,7 +79,9 @@ export default function Header({ onMenuClick }: HeaderProps) {
       setAlerts((prev) => prev.map((a) => ({ ...a, read: true })));
       setUnread(0);
     } catch (err) {
-      console.error("전체 읽음 실패:", err);
+      if (import.meta.env.DEV) {
+        console.error("전체 읽음 실패:", err);
+      }
     }
   };
 
@@ -80,7 +90,9 @@ export default function Header({ onMenuClick }: HeaderProps) {
     const token = localStorage.getItem("accessToken");
 
     if (!token) {
-      console.log("로그인 안됨 → 알림 API 미호출");
+      if (import.meta.env.DEV) {
+        console.log("로그인 안됨 → 알림 API 미호출");
+      }
       return;
     }
 
@@ -103,7 +115,9 @@ export default function Header({ onMenuClick }: HeaderProps) {
   // FCM → Header 갱신 이벤트 수신 (방법 A 핵심)
   useEffect(() => {
     const handler = () => {
-      console.log("🔄 alert-update 이벤트 감지 → Header 재로드");
+      if (import.meta.env.DEV) {
+        console.log("alert-update 이벤트 감지 → Header 재로드");
+      }
       fetchAlerts();
       fetchUnreadCount();
     };
@@ -137,7 +151,11 @@ export default function Header({ onMenuClick }: HeaderProps) {
         </div>
 
         <div className="flex-1 flex justify-center">
-          <h1 className="text-lg font-semibold text-gray-600">BUDGIE</h1>
+          <Link 
+            to="/app/dashboard" 
+            className="text-lg font-semibold text-gray-600 hover:text-pink-500 transition-colors">
+            BUDGIE
+          </Link>
         </div>
 
         <div className="w-10 flex justify-end relative">

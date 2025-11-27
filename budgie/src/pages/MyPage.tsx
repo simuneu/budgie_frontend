@@ -29,8 +29,10 @@ export default function MyPage() {
       });
       setNickname(res.data.nickname);
       setNewNickname(res.data.nickname);
-    } catch (err) {
-      console.error(err);
+    }catch (err) {
+      if (import.meta.env.DEV) {
+        console.error("유저 정보 불러오기 실패:", err);
+      }
     }
   };
 
@@ -114,10 +116,10 @@ export default function MyPage() {
 
   // 비밀번호 변경
   const handlePasswordChange = async () => {
-    console.log(token)
-    console.log("oldPassword state:", passwordOld);
-console.log("newPassword state:", passwordNew);
-console.log("confirm state:", passwordNewConfirm);
+    // console.log(token)
+    // console.log("oldPassword state:", passwordOld);
+    // console.log("newPassword state:", passwordNew);
+    // console.log("confirm state:", passwordNewConfirm);
   setPasswordError("");
   setNewPasswordError("");
 

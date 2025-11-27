@@ -75,10 +75,8 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
       onSave();
       onClose();
 
-    } catch (error) {
-      const err = error as AxiosError;
-      console.error("등록/수정 실패:", err.response?.data || err.message);
-      toast.error("등록/수정 중 문제가 발생했습니다.");
+    } catch {
+      toast.error("요청 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 

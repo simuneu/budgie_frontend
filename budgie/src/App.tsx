@@ -32,8 +32,9 @@ export default function App() {
           await axios.post("/api/fcm/token", { token });
         }
       } catch (err) {
-        console.error("FCM token error:", err);
+        if (import.meta.env.DEV) console.error(err);
       }
+
 
       // foreground message
       const unsubscribe = onMessage(messaging, (payload) => {

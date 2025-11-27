@@ -58,11 +58,11 @@ export default function StatisticsPanel({ year, month }: Props) {
       setExpenseSummary(exp.data || []);
       setIncomeSummary(income.data || []);
     } catch (e) {
-      console.error(e);
+      if (import.meta.env.DEV) {
+        console.error("통계 데이터 불러오기 실패:", e);
+      }
       setExpenseSummary([]);
       setIncomeSummary([]);
-    } finally {
-      setLoading(false);
     }
   };
 

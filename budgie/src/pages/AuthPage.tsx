@@ -170,6 +170,11 @@ export default function AuthPage() {
               placeholder="비밀번호를 입력하세요"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
             />
+            {!isLogin && (
+              <p className="text-xs text-gray-400 mt-1">
+                비밀번호는 8자 이상, 영문/숫자/특수문자를 모두 포함해야 합니다.
+              </p>
+            )}
           </div>
 
           {!isLogin && (
