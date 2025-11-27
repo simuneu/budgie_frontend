@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { CATEGORY_ICONS } from "../utils/categoryIcons";
 import { CATEGORY_LABELS } from "../utils/categoryLabel";
 import type { Transaction } from "../types/Transaction";

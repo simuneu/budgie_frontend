@@ -10,8 +10,12 @@ interface UserInfo {
   nickname: string;
 }
 
+interface SidebarProps {
+  onClose: () => void;   // ← 추가됨
+}
 
-export default function Sidebar() {
+
+export default function Sidebar({ onClose }: SidebarProps) {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
@@ -78,6 +82,7 @@ export default function Sidebar() {
       setShowLogoutModal(false);
 
       // 로그인 페이지로 이동
+      onClose();
       navigate("/");
     } catch{
       toast.error("로그아웃 실패");
@@ -96,6 +101,7 @@ export default function Sidebar() {
         px-6 py-8 
         relative 
         z-30
+        pt-14
         
         /* 데스크탑 전용 스타일 */
         md:bg-white/70

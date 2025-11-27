@@ -63,7 +63,9 @@ export default function StatisticsPanel({ year, month }: Props) {
       }
       setExpenseSummary([]);
       setIncomeSummary([]);
-    }
+    } finally {
+    setLoading(false);
+  }
   };
 
   useEffect(() => {

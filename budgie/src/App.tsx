@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AuthPage from "./pages/AuthPage";
 import MainLayout from "./layout/MainLayout";
 import PrivateRoute from "./routes/PrivateRoute";
@@ -54,9 +54,21 @@ export default function App() {
     })();
   }, []);
 
+    const isLoggedIn = !!localStorage.getItem("accessToken");
+
+
   return (
     <Routes>
-      <Route path="/" element={<AuthPage />} />
+      <Route
+        path="/"
+        element={
+          isLoggedIn ? (
+            <Navigate to="/app/dashboard" replace />
+          ) : (
+            <AuthPage />
+          )
+        }
+      />
 
       <Route
         path="/app"
