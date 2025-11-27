@@ -98,21 +98,22 @@ export default function Sidebar({ onClose }: SidebarProps) {
         shadow-lg 
         overflow-y-auto
         h-full   
-        px-6 py-8 
-        relative 
+        px-6
+        pt-6
+        pb-8
+        relative
         z-30
-        pt-14
         
         /* 데스크탑 전용 스타일 */
         md:bg-white/70
-        md:rounded-2xl       
-        md:shadow-xl         
-        md:sticky md:top-6   
-        md:h-[calc(100vh-3rem)] 
-        md:ml-6             
-        md:mr-6              
-        md:top-14
-        md:mb-14
+        md:rounded-2xl
+        md:shadow-xl
+        md:sticky
+        md:top-20         
+        md:h-[calc(100vh-4rem)]   
+        md:ml-12           
+        md:mr-6   
+        md:mb-8     
     ">
       <div className="mb-6 flex flex-col items-center text-center gap-2">
         {/* 병아리 프로필 */}
@@ -143,15 +144,15 @@ export default function Sidebar({ onClose }: SidebarProps) {
 
       {/* 네비게이션 */}
       <nav className="flex flex-col gap-2 items-center text-center">
-        <Link to="/app/dashboard" className="hover:text-blue-500">
+        <Link to="/app/dashboard" className="hover:text-blue-500"  onClick={onClose}>
           대시보드
         </Link>
 
-        <Link to="/app/analysis" className="hover:text-blue-500">
+        <Link to="/app/analysis" className="hover:text-blue-500"  onClick={onClose}>
           소비 분석
         </Link>
 
-        <Link to="/app/mypage" className="hover:text-blue-500">
+        <Link to="/app/mypage" className="hover:text-blue-500"  onClick={onClose}>
           마이페이지
         </Link>
         <button

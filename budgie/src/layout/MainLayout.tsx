@@ -22,8 +22,8 @@ export default function MainLayout() {
 
       <div className="flex pt-14 md:pt-16">
         {/* 데스크탑 사이드바 */}
-        <div className="hidden md:block">
-          <Sidebar />
+        <div className="hidden md:block w-60 ml-6 flex-shrink-0">
+           <Sidebar onClose={() => {}} />
         </div>
 
         {/* 메인 콘텐츠 */}
@@ -34,14 +34,14 @@ export default function MainLayout() {
 
       {/* 모바일 슬라이드 사이드바 */}
       {open && (
-        <div className="fixed inset-0 z-20">
+        <div className="fixed inset-0 z-[2000]">
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setOpen(false)}
           />
 
-          <div className="absolute top-0 left-0 w-60 h-full bg-white animate-slide-right backdrop-blur shadow-xl">
-            <Sidebar />
+          <div className="absolute top-14 left-0 w-60 h-[calc(100vh-3.5rem)] bg-white shadow-xl animate-slide-right">
+            <Sidebar onClose={() => setOpen(false)} />
             <button
               className="absolute top-4 right-4 text-xl"
               onClick={() => setOpen(false)}
