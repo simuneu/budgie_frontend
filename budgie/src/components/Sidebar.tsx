@@ -113,7 +113,8 @@ export default function Sidebar({ onClose }: SidebarProps) {
         md:sticky
         md:top-20         
         md:h-[calc(100vh-4rem)]   
-        md:ml-12           
+        md:ml-8 
+        md:mt-8          
         md:mr-6   
         md:mb-8     
     ">

@@ -4,6 +4,19 @@ import axios from 'axios';
 import { BrowserRouter } from "react-router-dom";
 import App from './App';
 
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.addEventListener("message", (e) => {
+    console.log("SW → main listener", e.data);
+
+    const msg = e.data || e;
+
+    if (msg?.type === "alert-update") {
+      console.log("dispatch alert-update !");
+      window.dispatchEvent(new Event("alert-update"));
+    }
+  });
+}
+
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "";
 axios.defaults.withCredentials = true;
 
@@ -25,6 +38,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 )
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/firebase-messaging-sw.js")
-    .catch(err => console.log("SW registration failed", err));
+  navigator.serviceWorker
+    .register("/firebase-messaging-sw.js")
+    .then(() => console.log("SW registered"))
+    .catch((err) => console.log("SW registration failed", err));
 }
+

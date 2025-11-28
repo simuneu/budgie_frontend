@@ -12,14 +12,15 @@ import { getMessagingSafe } from "./firebase";
 
 export default function App() {
   useEffect(() => {
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.addEventListener("message", (e) => {
-      if (e.data?.type === "alert-update") {
-        window.dispatchEvent(new Event("alert-update"));
-      }
-    });
-  }
-}, []);
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", (e) => {
+        if (e.data?.type === "alert-update") {
+          console.log("SW → alert-update");
+          window.dispatchEvent(new Event("alert-update"));
+        }
+      });
+    }
+  }, []);
 
 
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -60,7 +61,7 @@ export default function App() {
         });
 
         if (token) {
-          await axios.post("/api/fcm/token", { token });
+          await axios.post("/fcm/token", { token });
         }
       } catch (err) {
         if (import.meta.env.DEV) console.error(err);
@@ -79,15 +80,7 @@ export default function App() {
           autoClose: 3000,
         });
       }); 
-      // background → service worker 메시지 수신
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.addEventListener("message", (e) => {
-          if (e.data?.type === "alert-update") {
-            console.log("service worker → alert-update");
-            window.dispatchEvent(new Event("alert-update"));
-          }
-        });
-      }
+      
       // cleanup
       return () => unsubscribe();
     })();
