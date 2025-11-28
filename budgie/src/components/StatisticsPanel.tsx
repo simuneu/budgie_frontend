@@ -12,6 +12,7 @@ import { CATEGORY_LABELS } from "../utils/categoryLabel";
 interface Props {
   year: number;
   month: number;
+  refreshKey: number; 
 }
 
 interface SummaryItem {
@@ -32,7 +33,7 @@ const COLORS = [
   "#ffbcbcff",
 ];
 
-export default function StatisticsPanel({ year, month }: Props) {
+export default function StatisticsPanel({ year, month , refreshKey }: Props) {
   const [expenseSummary, setExpenseSummary] = useState<SummaryItem[]>([]);
   const [incomeSummary, setIncomeSummary] = useState<SummaryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +71,7 @@ export default function StatisticsPanel({ year, month }: Props) {
 
   useEffect(() => {
     fetchSummary();
-  }, [year, month]);
+  }, [year, month, refreshKey]);
 
   if (loading) return <div className="mt-10 text-gray-600">통계 불러오는 중...</div>;
 

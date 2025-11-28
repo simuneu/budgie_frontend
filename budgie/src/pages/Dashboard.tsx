@@ -39,6 +39,9 @@ export default function Dashboard() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
+  const [refreshKey, setRefreshKey] = useState(0);
+
+
   // API: 목표 조회
   const fetchGoal = async () => {
     try {
@@ -175,6 +178,7 @@ export default function Dashboard() {
       fetchTransactionsByDate(selectedDate);
       fetchMonthlySummary();
       refreshRecordedDays();
+      setRefreshKey(prev => prev + 1);
      } catch (e) {
       if (import.meta.env.DEV) {
         console.error("삭제 실패:", e);
@@ -333,7 +337,7 @@ export default function Dashboard() {
           />
         </div>
         <div className="mt-10">
-          <StatisticsPanel year={year} month={month} />
+          <StatisticsPanel year={year} month={month} refreshKey={refreshKey} />
         </div>
 
         {showModal && (
@@ -364,6 +368,7 @@ export default function Dashboard() {
               if (selectedDate) fetchTransactionsByDate(selectedDate);
               fetchMonthlySummary();
               refreshRecordedDays();
+              setRefreshKey(prev => prev + 1);
             }}
           />
         )}

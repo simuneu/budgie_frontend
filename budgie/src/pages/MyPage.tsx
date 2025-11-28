@@ -15,6 +15,8 @@ export default function MyPage() {
   const [deletePwError, setDeletePwError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [newPasswordError, setNewPasswordError] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+
 
 
   const token = localStorage.getItem("accessToken");
@@ -29,12 +31,16 @@ export default function MyPage() {
       });
       setNickname(res.data.nickname);
       setNewNickname(res.data.nickname);
+      setUserEmail(res.data.email);
     }catch (err) {
       if (import.meta.env.DEV) {
         console.error("유저 정보 불러오기 실패:", err);
       }
     }
   };
+
+  const isTestAccount = userEmail === "dino507782@gmail.com";
+
 
   // 회원탈퇴 버튼 클릭 시
     const openDeleteModal = async () => {
@@ -204,11 +210,16 @@ export default function MyPage() {
           {/* 비밀번호 변경 카드 */}
           <section className="max-w-md mx-auto w-full">
             <h2 className="text-xl font-semibold mb-4">비밀번호 변경</h2>
-
+            {isTestAccount && (
+              <p className="text-sm text-red-500 mb-4 font-medium">
+                테스트 계정은 해당 기능을 사용할 수 없습니다.
+              </p>
+            )}
             <label className="block text-gray-600 mb-1">현재 비밀번호</label>
             <input
             type="password"
             value={passwordOld}
+            disabled={isTestAccount}
             onChange={(e) => {
                 setPasswordOld(e.target.value);
                 setPasswordError("");
@@ -229,6 +240,7 @@ export default function MyPage() {
             <input
                 type="password"
                 value={passwordNew}
+                disabled={isTestAccount}
                 onChange={(e) => setPasswordNew(e.target.value)}
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-300
                     ${newPasswordError ? "border-red-500 bg-red-50" : ""}`}
@@ -242,12 +254,14 @@ export default function MyPage() {
             <input
             type="password"
             value={passwordNewConfirm}
+            disabled={isTestAccount}
             onChange={(e) => setPasswordNewConfirm(e.target.value)}
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-300"
             />
 
             <button
             onClick={handlePasswordChange}
+            disabled={isTestAccount}
             className="mt-4 w-full py-2 bg-teal-400 text-white rounded-lg hover:bg-teal-500 transition"
             >
             비밀번호 변경
@@ -256,7 +270,11 @@ export default function MyPage() {
         {/* 회원탈퇴 */}
           <section className="max-w-md mx-auto w-full">
             <h2 className="text-xl font-semibold mb-3 text-pink-600">회원 탈퇴</h2>
-
+            {isTestAccount && (
+              <p className="text-sm text-red-500 mb-3 font-medium">
+                테스트 계정은 해당 기능을 사용할 수 없습니다.
+              </p>
+            )}
             <p className="text-sm text-gray-600 mb-3">
             탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.
             </p>
@@ -264,6 +282,7 @@ export default function MyPage() {
             <input
                 type="password"
                 value={deletePw}
+                disabled={isTestAccount}
                 onChange={(e) => {
                 setDeletePw(e.target.value);
                 setDeletePwError(""); // 입력할 때 에러 메시지 제거
@@ -281,6 +300,7 @@ export default function MyPage() {
 
             <button
                 onClick={openDeleteModal}
+                disabled={isTestAccount}
                 className="mt-4 w-full py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600"
             >
                 회원 탈퇴

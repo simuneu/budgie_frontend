@@ -77,6 +77,8 @@ export default function Sidebar({ onClose }: SidebarProps) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
 
+      window.dispatchEvent(new Event("token-change"));
+
       toast.success("로그아웃 되었습니다.");
 
       setShowLogoutModal(false);

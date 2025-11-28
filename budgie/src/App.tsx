@@ -3,7 +3,7 @@ import AuthPage from "./pages/AuthPage";
 import MainLayout from "./layout/MainLayout";
 import PrivateRoute from "./routes/PrivateRoute";
 import Dashboard from "./pages/Dashboard";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import AnalysisPage from "./pages/AnalysisPage";
@@ -11,7 +11,27 @@ import MyPage from "./pages/MyPage";
 import { getMessagingSafe } from "./firebase";
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    !!localStorage.getItem("accessToken")
+  );
+
   useEffect(() => {
+    const handler = () => {
+      setIsLoggedIn(!!localStorage.getItem("accessToken"));
+    };
+
+    window.addEventListener("storage", handler);
+    window.addEventListener("token-change", handler);
+
+    return () => {
+      window.removeEventListener("storage", handler);
+      window.removeEventListener("token-change", handler);
+    };
+  }, []);
+
+
+  useEffect(() => {
+    
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken || accessToken === "null") return;
 
@@ -47,15 +67,20 @@ export default function App() {
           position: "top-right",
           autoClose: 3000,
         });
-      });
-
+      }); 
+      // background → service worker 메시지 수신
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.addEventListener("message", (e) => {
+          if (e.data?.type === "alert-update") {
+            console.log("service worker → alert-update");
+            window.dispatchEvent(new Event("alert-update"));
+          }
+        });
+      }
       // cleanup
       return () => unsubscribe();
     })();
   }, []);
-
-    const isLoggedIn = !!localStorage.getItem("accessToken");
-
 
   return (
     <Routes>

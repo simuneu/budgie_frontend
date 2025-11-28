@@ -18,4 +18,12 @@ messaging.onBackgroundMessage((payload) => {
   const body = `🔔 ${payload.data?.body || ""}`;
 
   self.registration.showNotification(title, { body });
+
+  // 클라이언트 모든 탭에 alert-update 보내기
+  self.clients.matchAll({ includeUncontrolled: true, type: "window" })
+    .then((clients) => {
+      clients.forEach((client) => {
+        client.postMessage({ type: "alert-update" });
+      });
+  });
 });
