@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useStatistics } from "../utils/useStatisticd";
 import DailyTrendChart from "../components/DailyTrendChart";
 import WeeklyPatternChart from "../components/WeeklyPatternChart";
 import TopCategoryCard from "../components/TopCategoryCard";
 import CompareExpenseCard from "../components/CompareExpenseCard";
+import { useStatistics } from "../utils/useStatistics";
 
 export interface DailyExpense {
   day: number;

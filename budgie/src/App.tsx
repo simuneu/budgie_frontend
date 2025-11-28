@@ -11,6 +11,17 @@ import MyPage from "./pages/MyPage";
 import { getMessagingSafe } from "./firebase";
 
 export default function App() {
+  useEffect(() => {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.addEventListener("message", (e) => {
+      if (e.data?.type === "alert-update") {
+        window.dispatchEvent(new Event("alert-update"));
+      }
+    });
+  }
+}, []);
+
+
   const [isLoggedIn, setIsLoggedIn] = useState(
     !!localStorage.getItem("accessToken")
   );

@@ -8,7 +8,10 @@ export const useStatistics = () => {
 
   const getWeeklyExpense = async (year: number, month: number) => {
     const res = await axios.get(`/statistics/${year}/${month}/weekday`);
-    return res.data;
+     return res.data.map((item: any) => ({
+    weekday: item.weekly,          // ← 여기 1줄이 핵심
+    totalAmount: item.totalAmount,
+  }));
   };
 
   const getTop3 = async (year: number, month: number) => {
