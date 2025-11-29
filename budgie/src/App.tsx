@@ -1,9 +1,9 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import AuthPage from "./pages/AuthPage";
 import MainLayout from "./layout/MainLayout";
 import PrivateRoute from "./routes/PrivateRoute";
 import Dashboard from "./pages/Dashboard";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import AnalysisPage from "./pages/AnalysisPage";
@@ -11,6 +11,7 @@ import MyPage from "./pages/MyPage";
 import { getMessagingSafe } from "./firebase";
 
 export default function App() {
+
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", (e) => {
@@ -21,26 +22,6 @@ export default function App() {
       });
     }
   }, []);
-
-
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    !!localStorage.getItem("accessToken")
-  );
-
-  useEffect(() => {
-    const handler = () => {
-      setIsLoggedIn(!!localStorage.getItem("accessToken"));
-    };
-
-    window.addEventListener("storage", handler);
-    window.addEventListener("token-change", handler);
-
-    return () => {
-      window.removeEventListener("storage", handler);
-      window.removeEventListener("token-change", handler);
-    };
-  }, []);
-
 
   useEffect(() => {
     
@@ -88,16 +69,7 @@ export default function App() {
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          isLoggedIn ? (
-            <Navigate to="/app/dashboard" replace />
-          ) : (
-            <AuthPage />
-          )
-        }
-      />
+      <Route path="/" element={<AuthPage />} />
 
       <Route
         path="/app"

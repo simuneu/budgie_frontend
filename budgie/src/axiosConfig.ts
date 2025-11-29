@@ -40,14 +40,6 @@ axios.interceptors.response.use(
     if (response?.status === 401 && !config._retry) {
       config._retry = true;
 
-      const refreshToken = localStorage.getItem("refreshToken");
-      if (!refreshToken) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/";
-        return Promise.reject(error);
-      }
-
       // 이미 refresh 요청 중이면 기다리기
       if (isRefreshing) {
         return new Promise((resolve) => {
@@ -65,20 +57,12 @@ axios.interceptors.response.use(
         const res = await axios.post(
           "/auth/refresh",
           {},
-          {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          }
+          {withCredentials: true}
         );
 
         const newAccessToken = res.data.accessToken;
-        const newRefreshToken = res.data.refreshToken;
 
         localStorage.setItem("accessToken", newAccessToken);
-        if (newRefreshToken) {
-          localStorage.setItem("refreshToken", newRefreshToken);
-        }
 
         isRefreshing = false;
         onRefreshed(newAccessToken);
@@ -88,7 +72,6 @@ axios.interceptors.response.use(
       } catch (err) {
         isRefreshing = false;
         localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
         window.location.href = "/";
         return Promise.reject(err);
       }

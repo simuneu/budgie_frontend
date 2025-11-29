@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 
@@ -24,7 +24,17 @@ export default function AuthPage() {
   const [newPw, setNewPw] = useState("");
   const [step, setStep] = useState(1);
   const [newPwConfirm, setNewPwConfirm] = useState("");
+  const [checking, setChecking] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) setLoggedIn(true);
+    setChecking(false);
+  }, []);
+
+  if (checking) return <div>Loading...</div>;
+  if (loggedIn) return <Navigate to="/app/dashboard" replace />;
 
 
   const resetInputs = () => {
@@ -104,7 +114,6 @@ export default function AuthPage() {
                 .post("/auth/login", { email, password })
                 .then((res: { data: { accessToken: string; refreshToken: string } }) => {
                   localStorage.setItem("accessToken", res.data.accessToken);
-                  localStorage.setItem("refreshToken", res.data.refreshToken);
                   toast.success("로그인 성공!");
 
                   setTimeout(() => {
