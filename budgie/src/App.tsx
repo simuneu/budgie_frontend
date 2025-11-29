@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import AnalysisPage from "./pages/AnalysisPage";
 import MyPage from "./pages/MyPage";
 import { getMessagingSafe } from "./firebase";
+import OAuthCallback from "./pages/OAuthCallback";
 
 export default function App() {
 
@@ -70,6 +71,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<AuthPage />} />
+      <Route path="/oauth/callback" element={<OAuthCallback />} />
 
       <Route
         path="/app"
