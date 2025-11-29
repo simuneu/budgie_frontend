@@ -2,6 +2,9 @@ import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 export default function MainLayout() {
   const [open, setOpen] = useState(false);
@@ -19,6 +22,8 @@ export default function MainLayout() {
     >
       {/* 상단 헤더: 모바일/데탑 공통 */}
       <Header onMenuClick={() => setOpen(true)} />
+
+      <ToastContainer position="top-center" autoClose={2000} hideProgressBar />
 
       <div className="flex pt-14 md:pt-16">
         {/* 데스크탑 사이드바 */}

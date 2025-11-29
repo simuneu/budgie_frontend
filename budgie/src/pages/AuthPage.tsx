@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { Navigate, useNavigate } from "react-router-dom";
 
@@ -51,7 +50,6 @@ export default function AuthPage() {
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center 
       bg-gradient-to-br from-teal-200 via-pink-100 to-white 
       bg-[length:400%_400%] animate-gradient-move p-6">
-      <ToastContainer position="top-center" autoClose={2000} hideProgressBar />
       {/* 소개 섹션 */}
      <motion.div
       className="md:w-1/2 text-center md:text-left mb-10 md:mb-0 flex flex-col justify-center"
