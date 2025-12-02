@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { type AxiosRequestHeaders } from "axios";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "";
 axios.defaults.withCredentials = true;
@@ -7,12 +7,19 @@ axios.defaults.withCredentials = true;
 axios.interceptors.request.use(
   (config) => {
    if (config.url?.includes("/auth/refresh")) {
+       if (config.headers) delete config.headers.Authorization;
       return config;
     }
-const token = localStorage.getItem("accessToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+
+    const raw = localStorage.getItem("accessToken");
+    const token = raw?.replace(/[\r\n\s]/g, "");
+
+  if (token) {
+    if (!config.headers) {
+      config.headers = {} as AxiosRequestHeaders;
     }
+    config.headers.Authorization = `Bearer ${token}`;
+  }
     return config;
   },
   (error) => Promise.reject(error)
