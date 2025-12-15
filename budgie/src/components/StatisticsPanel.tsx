@@ -185,9 +185,18 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
                         const korean =
                           CATEGORY_LABELS[props.payload.categoryName] ??
                           props.payload.categoryName;
-                        return [`${value.toLocaleString()}원`, korean];
+
+                        const amount =
+                          typeof value === "number"
+                            ? value
+                            : typeof value === "string"
+                            ? Number(value)
+                            : 0;
+
+                        return [`${amount.toLocaleString()}원`, korean];
                       }}
                     />
+
                   </PieChart>
                 </ResponsiveContainer>
               </div>

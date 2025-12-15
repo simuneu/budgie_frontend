@@ -87,7 +87,8 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    setCategories(res.data);
+    const data = res.data?.data ?? res.data;
+    setCategories(Array.isArray(data) ? data : []);
   };
 
   useEffect(() => {

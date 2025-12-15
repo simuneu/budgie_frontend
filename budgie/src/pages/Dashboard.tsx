@@ -91,7 +91,7 @@ export default function Dashboard() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setMonthlyExpense(res.data.totalExpense ?? 0);
+      setMonthlyExpense(res.data.data.totalExpense ?? 0);
     } catch {
       setMonthlyExpense(0);
     }
@@ -207,8 +207,9 @@ export default function Dashboard() {
         },
         headers: { Authorization: `Bearer ${token}` },
       });
+      const data = res.data?.data;
 
-      setTransactions(res.data.data || []);
+      setTransactions(Array.isArray(data) ? data : []);
     } catch (e) {
       if (import.meta.env.DEV) {
         console.error("거래 내역 불러오기 실패:", e);

@@ -5,7 +5,7 @@ import { CATEGORY_ICONS } from "../utils/categoryIcons";
 interface Props {
   date: string | null;
   transactions: Transaction[];
-  onCreate: (date: string) => void;
+  onCreate: () => void;
   onUpdate: (item: Transaction) => void;
   onDelete: (id: number) => void;
 }
@@ -36,6 +36,10 @@ export default function TransactionPanel({
   onUpdate,
   onDelete,
 }: Props) {
+  if (!Array.isArray(transactions)) {
+  return null;
+}
+
   if (!date) {
     return (
       <div className="p-6 bg-white/80 rounded-xl shadow-md text-center">
@@ -178,7 +182,7 @@ export default function TransactionPanel({
       {/* 등록 버튼 */}
       <button
         className="mt-4 md:mt-6 w-full bg-pink-400 text-white py-2 md:py-3 rounded-lg shadow-md hover:bg-pink-500 transition"
-        onClick={() => onCreate(date)}
+        onClick={onCreate}
       >
         등록
       </button>
