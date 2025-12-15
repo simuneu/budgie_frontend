@@ -111,7 +111,7 @@ export default function AuthPage() {
               axios
                 .post("/auth/login", { email, password })
                 .then((res) => {
-                  const accessToken = res.data.data.accessToken;
+                  const accessToken = res.data.accessToken;
                   localStorage.setItem("accessToken", accessToken);
                   toast.success(res.data.message ?? "로그인 성공!");
 

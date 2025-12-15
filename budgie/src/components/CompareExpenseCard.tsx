@@ -22,7 +22,7 @@ export default function CompareExpenseCard({ data }: CompareExpenseCardProps) {
           이번 달 소비: <strong>{(data.current ?? 0).toLocaleString()}원</strong>
         </p>
         <p>
-          지난달 소비: <strong>{(data.previous ?? 0).toLocaleString()}원원</strong>
+          지난달 소비: <strong>{(data.previous ?? 0).toLocaleString()}원</strong>
         </p>
 
         <p
@@ -32,7 +32,8 @@ export default function CompareExpenseCard({ data }: CompareExpenseCardProps) {
               : "text-blue-500 font-semibold"
           }
         >
-          {isIncrease ? "▲" : "▼"} {Math.abs(data.percent)}%
+          {isIncrease ? "▲" : "▼"} {Math.abs(data.percent ?? 0)}%
+
         </p>
       </div>
     </div>

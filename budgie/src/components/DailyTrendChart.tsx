@@ -36,10 +36,19 @@ export default function DailyTrendChart({ data }: DailyTrendChartProps) {
 
           <YAxis tick={{ fontSize: 12 }} />
           <Tooltip
-            formatter={(value: number) => [`${value.toLocaleString()}원`, "사용 금액"]}
-            labelFormatter={(day: number) => `${day}일`}
+            formatter={(value) => {
+              const num =
+                typeof value === "number"
+                  ? value
+                  : typeof value === "string"
+                  ? Number(value)
+                  : 0;
+
+              return [`${num.toLocaleString()}원`, "사용 금액"];
+            }}
+            labelFormatter={(day) => `${day}일`}
             contentStyle={{ borderRadius: "8px", fontSize: "14px" }}
-            />
+          />
 
           <Bar
             dataKey="totalAmount"

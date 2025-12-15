@@ -142,7 +142,7 @@ export default function TransactionPanel({
                           {categoryName}
                         </p>
                         <p className="text-gray-600">
-                          {t.amount.toLocaleString()}원
+                          {(t.amount ?? 0).toLocaleString()}원
                         </p>
                         {t.memo && (
                           <p className="text-gray-500 text-sm mt-1">{t.memo}</p>
