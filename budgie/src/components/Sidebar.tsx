@@ -28,7 +28,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
         Authorization: `Bearer ${token}`,
       },
     });
-    setUser(res.data);
+    setUser(res.data.data);
   } catch (err) {
     if (import.meta.env.DEV) {
       console.error("유저 정보 불러오기 실패:", err);

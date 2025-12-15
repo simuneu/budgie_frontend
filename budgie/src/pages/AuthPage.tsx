@@ -110,9 +110,10 @@ export default function AuthPage() {
               // 로그인 요청
               axios
                 .post("/auth/login", { email, password })
-                .then((res: { data: { accessToken: string; refreshToken: string } }) => {
-                  localStorage.setItem("accessToken", res.data.accessToken);
-                  toast.success("로그인 성공!");
+                .then((res) => {
+                  const accessToken = res.data.data.accessToken;
+                  localStorage.setItem("accessToken", accessToken);
+                  toast.success(res.data.message ?? "로그인 성공!");
 
                   setTimeout(() => {
                     navigate("/app/dashboard");
@@ -135,8 +136,8 @@ export default function AuthPage() {
               // 회원가입 요청
               axios
                 .post("/auth/signup", { email, password, nickname })
-                 .then(() => {
-                  toast.success("회원가입 성공! 로그인 페이지로 이동합니다.");
+                 .then((res) => {
+                    toast.success(res.data.message ?? "회원가입 성공!");
                   resetInputs();
                   setTimeout(() => setIsLogin(true), 2000);
                 })

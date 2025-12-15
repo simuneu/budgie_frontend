@@ -24,7 +24,8 @@ export default function PrivateRoute({ children }: Props) {
     axios
       .post("/auth/refresh", {}, { withCredentials: true })
       .then((res) => {
-        localStorage.setItem("accessToken", res.data.accessToken);
+        const accessToken = res.data.data.accessToken;
+        localStorage.setItem("accessToken", accessToken);
         setAuthorized(true);
       })
       .catch(() => {

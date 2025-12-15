@@ -11,6 +11,7 @@ interface TopCategoryCardProps {
 }
 
 export default function TopCategoryCard({ data }: TopCategoryCardProps) {
+  if (!data || data.length === 0) return null;
   return (
     <div className="bg-white p-4 rounded-xl shadow">
       <h2 className="font-semibold mb-3">가장 많이 쓴 카테고리 Top 3</h2>
@@ -30,7 +31,7 @@ export default function TopCategoryCard({ data }: TopCategoryCardProps) {
               </span>
 
               <span className="font-semibold">
-                {item.totalAmount.toLocaleString()}원
+                {(item.totalAmount ?? 0).toLocaleString()}원
               </span>
             </div>
           );

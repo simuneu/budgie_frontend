@@ -31,14 +31,14 @@ export default function WeeklyPatternChart({ data }: WeeklyPatternChartProps) {
   data.forEach((item) => {
     const idx = item.weekday - 1;
     if (idx >= 0 && idx < 7) {
-      base[idx].totalAmount = item.totalAmount;
+      base[idx].totalAmount = item.totalAmount ?? 0;
     }
   });
 
   // 3) 차트용 데이터 변환
   const formatted = base.map((d) => ({
     name: WEEK[d.weekday - 1],
-    amount: d.totalAmount,
+    amount: d.totalAmount ?? 0,
   }));
 
    const maxDay = base.reduce((prev, cur) =>

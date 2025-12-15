@@ -55,7 +55,7 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
 
     const payload = {
       transactionDate: date,
-      amount: Number(amount),
+      amount: cleanAmount,
       memo,
       categoryId,
     };

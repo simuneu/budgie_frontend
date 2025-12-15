@@ -52,7 +52,7 @@ export default function Dashboard() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setGoal(res.data || null);
+      setGoal(res.data.data || null);
     } catch {
       setGoal(null);
     } finally {
@@ -126,7 +126,7 @@ export default function Dashboard() {
       params: { year, month },
       headers: { Authorization: `Bearer ${token}` },
     })
-    .then((res) => setRecordedDays(res.data))
+    .then((res) => setRecordedDays(res.data.data ?? []))
     .catch(() => setRecordedDays([]));
 }, [year, month]);
 
@@ -148,7 +148,7 @@ export default function Dashboard() {
       params: { year, month },
       headers: { Authorization: `Bearer ${token}` },
     })
-    .then((res) => setRecordedDays(res.data))
+    .then((res) => setRecordedDays(res.data.data ?? []))
     .catch(() => setRecordedDays([]));
 };
 
@@ -208,7 +208,7 @@ export default function Dashboard() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setTransactions(res.data || []);
+      setTransactions(res.data.data || []);
     } catch (e) {
       if (import.meta.env.DEV) {
         console.error("거래 내역 불러오기 실패:", e);
@@ -271,7 +271,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           <div className="bg-white/80  p-5 rounded-xl shadow relative">
             <p className="text-gray-600">월 목표 금액</p>
-            <p className="text-2xl font-bold">{goal.goalAmount.toLocaleString()} 원</p>
+            <p className="text-2xl font-bold">{(goal.goalAmount ?? 0).toLocaleString()} 원</p>
              <button
                 className="absolute top-3 right-3 text-sm text-pink-500 hover:text-teal-600"
                 onClick={() => setShowModal(true)}
@@ -283,14 +283,14 @@ export default function Dashboard() {
           <div className="bg-white/80  p-5 rounded-xl shadow">
             <p className="text-gray-600">이번 달 소비 금액</p>
             <p className="text-2xl font-bold text-pink-500">
-              {monthlyExpense.toLocaleString()} 원
+              {(monthlyExpense ?? 0).toLocaleString()} 원
             </p>
           </div>
 
           <div className="bg-white/80  p-5 rounded-xl shadow">
             <p className="text-gray-600">남은 금액</p>
             <p className="text-2xl font-bold text-teal-500">
-              {remaining.toLocaleString()} 원
+              {(remaining ?? 0).toLocaleString()} 원
             </p>
           </div>
         </div>

@@ -1,13 +1,12 @@
 import "./axiosConfig"; 
 import ReactDOM from 'react-dom/client'
 import './App.css'
-import axios from 'axios';
+// import axios from 'axios';
 import { BrowserRouter } from "react-router-dom";
 import App from './App';
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.addEventListener("message", (e) => {
-    // console.log("SW → main listener", e.data);
 
     const msg = e.data || e;
 
@@ -18,60 +17,60 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "";
-axios.defaults.withCredentials = true;
+// axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "";
+// axios.defaults.withCredentials = true;
 
-axios.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// axios.interceptors.request.use(
+//   (config) => {
+//     const token = localStorage.getItem("accessToken");
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`;
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
 
-axios.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+// axios.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
 
-    // accessToken 만료 → refresh 필요
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+//     // accessToken 만료 → refresh 필요
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
 
-      try {
-        const refreshToken = localStorage.getItem("refreshToken");
-        if (!refreshToken) {
-          throw new Error("No refresh token");
-        }
+//       try {
+//         const refreshToken = localStorage.getItem("refreshToken");
+//         if (!refreshToken) {
+//           throw new Error("No refresh token");
+//         }
 
-        // refresh API 호출
-        const res = await axios.post("/auth/refresh", {
-          refreshToken,
-        });
+//         // refresh API 호출
+//         const res = await axios.post("/auth/refresh", {
+//           refreshToken,
+//         });
 
-        // 새 액세스토큰 저장
-        localStorage.setItem("accessToken", res.data.accessToken);
+//         // 새 액세스토큰 저장
+//         localStorage.setItem("accessToken", res.data.accessToken);
 
-        // 헤더 추가 후 원래 요청 재시도
-        originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
+//         // 헤더 추가 후 원래 요청 재시도
+//         originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
 
-        return axios(originalRequest);
+//         return axios(originalRequest);
 
-      } catch {
+//       } catch {
 
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+//         localStorage.removeItem("accessToken");
+//         localStorage.removeItem("refreshToken");
 
-        window.location.href = "/"; // 로그인 페이지로 이동
-      }
-    }
+//         window.location.href = "/"; // 로그인 페이지로 이동
+//       }
+//     }
 
-    return Promise.reject(error);
-  }
-);
+//     return Promise.reject(error);
+//   }
+// );
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

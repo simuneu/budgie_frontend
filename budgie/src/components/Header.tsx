@@ -32,7 +32,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
   const fetchAlerts = async () => {
   try {
     const res = await axios.get("/alert");
-    setAlerts(res.data);
+      setAlerts(res.data.data ?? []);
   } catch (err) {
     if (import.meta.env.DEV) {
       console.error("알림 목록 불러오기 실패:", err);
@@ -45,7 +45,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
   const fetchUnreadCount = async () => {
     try {
       const res = await axios.get("/alert/unread-count");
-      setUnread(res.data);
+      setUnread(res.data.data ?? 0);
     } catch (err) {
       if (import.meta.env.DEV) {
         console.error("미읽음 카운트 실패:", err);

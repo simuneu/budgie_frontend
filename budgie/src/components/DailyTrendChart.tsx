@@ -19,6 +19,7 @@ interface DailyTrendChartProps {
 }
 
 export default function DailyTrendChart({ data }: DailyTrendChartProps) {
+  if (!data || data.length === 0) return null;
   return (
     <div className="bg-white p-4 rounded-xl shadow">
       <h2 className="font-semibold mb-2">일별 소비 패턴</h2>

@@ -10,6 +10,7 @@ interface CompareExpenseCardProps {
 }
 
 export default function CompareExpenseCard({ data }: CompareExpenseCardProps) {
+  if (!data) return null;
   const isIncrease = data.difference > 0;
 
   return (
@@ -18,10 +19,10 @@ export default function CompareExpenseCard({ data }: CompareExpenseCardProps) {
 
       <div className="flex flex-col gap-2">
         <p>
-          이번 달 소비: <strong>{data.current.toLocaleString()}원</strong>
+          이번 달 소비: <strong>{(data.current ?? 0).toLocaleString()}원</strong>
         </p>
         <p>
-          지난달 소비: <strong>{data.previous.toLocaleString()}원</strong>
+          지난달 소비: <strong>{(data.previous ?? 0).toLocaleString()}원원</strong>
         </p>
 
         <p

@@ -56,8 +56,8 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
         }
       );
 
-      setExpenseSummary(exp.data || []);
-      setIncomeSummary(income.data || []);
+      setExpenseSummary(exp.data.data || []);
+      setIncomeSummary(income.data.data || []);
     } catch (e) {
       if (import.meta.env.DEV) {
         console.error("통계 데이터 불러오기 실패:", e);
@@ -90,7 +90,7 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
           </span>
 
           <span className="text-gray-500 text-sm">
-            {item.totalAmount.toLocaleString()}원
+            {(item.totalAmount ?? 0).toLocaleString()}원
           </span>
         </li>
       ))}
@@ -134,7 +134,7 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
                         const korean =
                           CATEGORY_LABELS[props.payload.categoryName] ??
                           props.payload.categoryName;
-                        return [`${value.toLocaleString()}원`, korean];
+                        return [`${Number(value ?? 0).toLocaleString()}원`, korean];
                       }}
                     />
                   </PieChart>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
@@ -29,9 +29,11 @@ export default function MyPage() {
       const res = await axios.get("/users/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setNickname(res.data.nickname);
-      setNewNickname(res.data.nickname);
-      setUserEmail(res.data.email);
+      const user = res.data.data;
+
+      setNickname(user.nickname);
+      setNewNickname(user.nickname);
+      setUserEmail(user.email);
     }catch (err) {
       if (import.meta.env.DEV) {
         console.error("유저 정보 불러오기 실패:", err);
@@ -159,8 +161,10 @@ export default function MyPage() {
         setPasswordNew("");
         setPasswordNewConfirm("");
         setNewPasswordError("");
-    } catch (err: any) {
-        if (err.response?.status === 400) {
+    } catch (err) {
+      const error = err as AxiosError;
+
+        if (error.response?.status === 400) {
         setPasswordError("현재 비밀번호가 일치하지 않습니다.");
         } else {
         setPasswordError("비밀번호 변경 실패");
