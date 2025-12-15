@@ -8,6 +8,7 @@ import type { Transaction } from "../types/Transaction";
 import AddTransactionModal from "../components/AddTransactionModal";
 import StatisticsPanel from "../components/StatisticsPanel";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import { formatNumber } from "../utils/format";
 
 interface RecordedDay {
   day: number;
@@ -272,7 +273,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           <div className="bg-white/80  p-5 rounded-xl shadow relative">
             <p className="text-gray-600">월 목표 금액</p>
-            <p className="text-2xl font-bold">{(goal.goalAmount ?? 0).toLocaleString()} 원</p>
+            <p className="text-2xl font-bold"> {formatNumber(goal.goalAmount)} 원</p>
              <button
                 className="absolute top-3 right-3 text-sm text-pink-500 hover:text-teal-600"
                 onClick={() => setShowModal(true)}
@@ -284,14 +285,14 @@ export default function Dashboard() {
           <div className="bg-white/80  p-5 rounded-xl shadow">
             <p className="text-gray-600">이번 달 소비 금액</p>
             <p className="text-2xl font-bold text-pink-500">
-              {(monthlyExpense ?? 0).toLocaleString()} 원
+              {formatNumber(monthlyExpense)} 원
             </p>
           </div>
 
           <div className="bg-white/80  p-5 rounded-xl shadow">
             <p className="text-gray-600">남은 금액</p>
             <p className="text-2xl font-bold text-teal-500">
-              {(remaining ?? 0).toLocaleString()} 원
+              {formatNumber(remaining)} 원
             </p>
           </div>
         </div>

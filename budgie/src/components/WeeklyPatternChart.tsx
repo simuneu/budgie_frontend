@@ -74,7 +74,10 @@ if (maxDay.totalAmount === 0) {
           <YAxis tick={{ fontSize: 12 }} />
 
           <Tooltip
-            formatter={(value: number) => [`${value.toLocaleString()}원`, "사용 금액"]}
+            formatter={(value: number) => {
+              const safe = Number.isFinite(value) ? value : 0;
+              return [`${safe.toLocaleString()}원`, "사용 금액"];
+            }}
             contentStyle={{ borderRadius: "8px", fontSize: "14px" }}
           />
 
@@ -86,11 +89,17 @@ if (maxDay.totalAmount === 0) {
             <LabelList
               dataKey="amount"
               position="top"
-               formatter={(value: unknown) => {
-                if (typeof value === "number") return value.toLocaleString();
-                if (typeof value === "string") return Number(value).toLocaleString();
-                return "";
+              formatter={(value: unknown) => {
+                const num =
+                  typeof value === "number"
+                    ? value
+                    : typeof value === "string"
+                    ? Number(value)
+                    : 0;
+
+                return Number.isFinite(num) ? num.toLocaleString() : "0";
               }}
+
               style={{ fill: "#444", fontSize: 12, fontWeight: 500 }}
             />
           </Bar>

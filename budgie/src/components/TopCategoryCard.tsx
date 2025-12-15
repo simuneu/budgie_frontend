@@ -31,7 +31,7 @@ export default function TopCategoryCard({ data }: TopCategoryCardProps) {
               </span>
 
               <span className="font-semibold">
-                {(item.totalAmount ?? 0).toLocaleString()}원
+                {Number(item.totalAmount || 0).toLocaleString()}원
               </span>
             </div>
           );

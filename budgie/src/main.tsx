@@ -5,6 +5,24 @@ import './App.css'
 import { BrowserRouter } from "react-router-dom";
 import App from './App';
 
+const _toLocaleString = Number.prototype.toLocaleString;
+
+Number.prototype.toLocaleString = function (
+  ...args: Parameters<number["toLocaleString"]>
+): string {
+  const num = Number(this);
+
+  if (!Number.isFinite(num)) {
+    return "0";
+  }
+
+  return _toLocaleString.apply(this, args);
+};
+
+
+
+
+
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.addEventListener("message", (e) => {
 

@@ -90,7 +90,7 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
           </span>
 
           <span className="text-gray-500 text-sm">
-            {(item.totalAmount ?? 0).toLocaleString()}원
+            {Number(item.totalAmount || 0).toLocaleString()}원          
           </span>
         </li>
       ))}
@@ -142,7 +142,9 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
                             ? Number(value)
                             : 0;
 
-                        return [`${amount.toLocaleString()}원`, korean];
+                        const safeAmount = Number.isFinite(amount) ? amount : 0;
+                        return [`${safeAmount.toLocaleString()}원`, korean];
+
                       }}
                     />
 
@@ -193,7 +195,8 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
                             ? Number(value)
                             : 0;
 
-                        return [`${amount.toLocaleString()}원`, korean];
+                        const safeAmount = Number.isFinite(amount) ? amount : 0;
+                        return [`${safeAmount.toLocaleString()}원`, korean];
                       }}
                     />
 
