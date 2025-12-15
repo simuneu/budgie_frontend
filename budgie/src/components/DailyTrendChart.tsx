@@ -44,13 +44,14 @@ export default function DailyTrendChart({ data }: DailyTrendChartProps) {
                   ? Number(value)
                   : 0;
 
-              const safe = Number.isFinite(num) ? num : 0;
-              return [`${safe.toLocaleString()}원`, "사용 금액"];
+              const safeNum = Number.isFinite(num) ? num : 0;
 
+              return [`${safeNum.toLocaleString()}원`, "사용 금액"];
             }}
             labelFormatter={(day) => `${day}일`}
             contentStyle={{ borderRadius: "8px", fontSize: "14px" }}
           />
+
 
           <Bar
             dataKey="totalAmount"

@@ -1,3 +1,5 @@
+import { formatNumber } from "../utils/format";
+
 interface CompareExpense {
   current?: number;
   previous?: number;
@@ -27,12 +29,10 @@ const isIncrease = difference > 0;
 
       <div className="flex flex-col gap-2">
         <p>
-          이번 달 소비: <strong>{current.toLocaleString()}
-원</strong>
+          이번 달 소비: <strong>{formatNumber(current)}원</strong>
         </p>
         <p>
-          지난달 소비: <strong>{previous.toLocaleString()}
-원</strong>
+          지난달 소비: <strong>{formatNumber(previous)}원</strong>
         </p>
 
         <p

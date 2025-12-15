@@ -9,8 +9,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("dino507782@gmail.com");
+  const [password, setPassword] = useState("abcd1234!");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [nickname, setNickname] = useState("");
   const [code, setCode] = useState("");

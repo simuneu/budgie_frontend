@@ -129,11 +129,14 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
                       ))}
                     </Pie>
 
-                    <Tooltip
+                   <Tooltip
                       formatter={(value, _name, props) => {
+                        const payload = props?.payload as SummaryItem | undefined;
+
                         const korean =
-                          CATEGORY_LABELS[props.payload.categoryName] ??
-                          props.payload.categoryName;
+                          payload
+                            ? CATEGORY_LABELS[payload.categoryName] ?? payload.categoryName
+                            : "기타";
 
                         const amount =
                           typeof value === "number"
@@ -143,10 +146,11 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
                             : 0;
 
                         const safeAmount = Number.isFinite(amount) ? amount : 0;
-                        return [`${safeAmount.toLocaleString()}원`, korean];
 
+                        return [`${safeAmount.toLocaleString()}원`, korean];
                       }}
                     />
+
 
                   </PieChart>
                 </ResponsiveContainer>
@@ -184,9 +188,12 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
 
                     <Tooltip
                       formatter={(value, _name, props) => {
+                        const payload = props?.payload as SummaryItem | undefined;
+
                         const korean =
-                          CATEGORY_LABELS[props.payload.categoryName] ??
-                          props.payload.categoryName;
+                          payload
+                            ? CATEGORY_LABELS[payload.categoryName] ?? payload.categoryName
+                            : "기타";
 
                         const amount =
                           typeof value === "number"
@@ -196,6 +203,7 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
                             : 0;
 
                         const safeAmount = Number.isFinite(amount) ? amount : 0;
+
                         return [`${safeAmount.toLocaleString()}원`, korean];
                       }}
                     />

@@ -42,6 +42,9 @@ export default function Dashboard() {
 
   const [refreshKey, setRefreshKey] = useState(0);
 
+  const [skipGoal, setSkipGoal] = useState(false);
+
+
 
   // API: 목표 조회
   const fetchGoal = async () => {
@@ -227,7 +230,7 @@ export default function Dashboard() {
     return <div className="p-10 text-xl">불러오는 중...</div>;
 
   // UI: 목표 없음 → 입력 유도
-  if (!goal) {
+  if (!goal && !skipGoal) {
     return (
       <div className="relative min-h-screen bg-gradient-to-br from-teal-200 via-pink-100 to-white bg-[length:400%_400%] animate-gradient-move p-6">
 
@@ -243,7 +246,13 @@ export default function Dashboard() {
            }}
             />
           ) : (
-            <div className="bg-white/80 px-10 py-8 rounded-2xl shadow-xl text-center">
+            <div className="bg-white/80 px-10 py-8 rounded-2xl shadow-xl text-center relative">
+                <button
+                  onClick={() => setSkipGoal(true)}
+                  className="absolute top-4 right-4 text-sm text-gray-500 hover:text-gray-700"
+                >
+                  X
+                </button>
               <h2 className="text-2xl font-bold mb-4">이번 달 목표가 없어요! 🐥</h2>
               <p className="text-gray-600 mb-4">예산을 먼저 설정해주세요.</p>
 
@@ -271,9 +280,10 @@ export default function Dashboard() {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          
           <div className="bg-white/80  p-5 rounded-xl shadow relative">
             <p className="text-gray-600">월 목표 금액</p>
-            <p className="text-2xl font-bold"> {formatNumber(goal.goalAmount)} 원</p>
+            <p className="text-2xl font-bold"> {formatNumber(goal?.goalAmount ?? 0)} 원</p>
              <button
                 className="absolute top-3 right-3 text-sm text-pink-500 hover:text-teal-600"
                 onClick={() => setShowModal(true)}

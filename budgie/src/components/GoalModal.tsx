@@ -7,7 +7,11 @@ interface GoalModalProps {
 }
 
 export default function GoalModal({ onClose, onSave, existingGoal }: GoalModalProps) {
-  const [amount, setAmount] = useState<number>(existingGoal?.goalAmount ?? 0);
+  const [amount, setAmount] = useState(
+    existingGoal?.goalAmount
+      ? String(existingGoal.goalAmount)
+      : ""
+  );
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
@@ -26,7 +30,7 @@ export default function GoalModal({ onClose, onSave, existingGoal }: GoalModalPr
         <input
           type="number"
           value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
+          onChange={(e) => setAmount(e.target.value)}
           placeholder="예: 400000"
           className="w-full px-4 py-3 border rounded-xl focus:ring-2 
                      focus:ring-pink-300 focus:outline-none mb-6"
