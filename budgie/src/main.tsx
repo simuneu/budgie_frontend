@@ -5,6 +5,7 @@ import './App.css'
 import { BrowserRouter } from "react-router-dom";
 import App from './App';
 
+
 const _toLocaleString = Number.prototype.toLocaleString;
 
 Number.prototype.toLocaleString = function (
@@ -18,10 +19,6 @@ Number.prototype.toLocaleString = function (
 
   return _toLocaleString.apply(this, args);
 };
-
-
-
-
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.addEventListener("message", (e) => {
@@ -98,9 +95,28 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 )
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("/firebase-messaging-sw.js")
-    .then(() => console.log("SW registered"))
-    .catch((err) => console.log("SW registration failed", err));
+  navigator.serviceWorker.register("/firebase-messaging-sw.js").then((reg) => {
+    console.log("SW registered");
+
+    if (reg.waiting) {
+      reg.waiting.postMessage({ type: "SKIP_WAITING" });
+    }
+
+    reg.addEventListener("updatefound", () => {
+      const newWorker = reg.installing;
+      if (!newWorker) return;
+
+      newWorker.addEventListener("statechange", () => {
+        if (
+          newWorker.state === "installed" &&
+          navigator.serviceWorker.controller
+        ) {
+          newWorker.postMessage({ type: "SKIP_WAITING" });
+          window.location.reload();
+        }
+      });
+    });
+  });
 }
+
 

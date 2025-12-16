@@ -140,6 +140,10 @@ export default function Dashboard() {
     fetchMonthlySummary();
   }, [year, month]);
 
+   const todayString = `${today.getFullYear()}-${String(
+    today.getMonth() + 1
+  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  
   //오늘 내역
   useEffect(() => {
     fetchTransactionsByDate(todayString);
@@ -193,9 +197,7 @@ export default function Dashboard() {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   
-  const todayString = `${today.getFullYear()}-${String(
-    today.getMonth() + 1
-  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+ 
   const [selectedDate, setSelectedDate] = useState<string | null>(todayString);
   
   const fetchTransactionsByDate = async (date: string) => {

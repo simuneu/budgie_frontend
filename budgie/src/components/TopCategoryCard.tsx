@@ -1,5 +1,6 @@
 import { CATEGORY_ICONS } from "../utils/categoryIcons";
 import { CATEGORY_NAME_TO_KEY } from "../utils/categoryNameToKey";
+import { formatNumber } from "../utils/format";
 
 interface TopCategory {
   categoryName: string;
@@ -18,6 +19,8 @@ export default function TopCategoryCard({ data }: TopCategoryCardProps) {
 
       <div className="flex flex-col gap-3">
         {data.map((item, idx) => {
+          if (!item) return null;
+
           const key = CATEGORY_NAME_TO_KEY[item.categoryName] ?? "ETC";
           const icon = CATEGORY_ICONS[key];
 
@@ -31,7 +34,7 @@ export default function TopCategoryCard({ data }: TopCategoryCardProps) {
               </span>
 
               <span className="font-semibold">
-                {Number(item.totalAmount || 0).toLocaleString()}원
+                 {formatNumber(item?.totalAmount)}원
               </span>
             </div>
           );

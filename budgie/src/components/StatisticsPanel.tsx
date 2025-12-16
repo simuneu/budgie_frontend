@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { CATEGORY_LABELS } from "../utils/categoryLabel";
+import { formatNumber } from "../utils/format";
 
 interface Props {
   year: number;
@@ -90,7 +91,7 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
           </span>
 
           <span className="text-gray-500 text-sm">
-            {Number(item.totalAmount || 0).toLocaleString()}원          
+            {formatNumber(item.totalAmount)}원         
           </span>
         </li>
       ))}
@@ -130,27 +131,17 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
                     </Pie>
 
                    <Tooltip
-                      formatter={(value, _name, props) => {
-                        const payload = props?.payload as SummaryItem | undefined;
+                    formatter={(value, _name, props) => {
+                      const payload = props?.payload as SummaryItem | undefined;
 
-                        const korean =
-                          payload
-                            ? CATEGORY_LABELS[payload.categoryName] ?? payload.categoryName
-                            : "기타";
+                      const korean =
+                        payload
+                          ? CATEGORY_LABELS[payload.categoryName] ?? payload.categoryName
+                          : "기타";
 
-                        const amount =
-                          typeof value === "number"
-                            ? value
-                            : typeof value === "string"
-                            ? Number(value)
-                            : 0;
-
-                        const safeAmount = Number.isFinite(amount) ? amount : 0;
-
-                        return [`${safeAmount.toLocaleString()}원`, korean];
-                      }}
-                    />
-
+                      return [`${formatNumber(value)}원`, korean];
+                    }}
+                  />
 
                   </PieChart>
                 </ResponsiveContainer>
@@ -186,27 +177,18 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
                       ))}
                     </Pie>
 
-                    <Tooltip
-                      formatter={(value, _name, props) => {
-                        const payload = props?.payload as SummaryItem | undefined;
+                  <Tooltip
+                    formatter={(value, _name, props) => {
+                      const payload = props?.payload as SummaryItem | undefined;
 
-                        const korean =
-                          payload
-                            ? CATEGORY_LABELS[payload.categoryName] ?? payload.categoryName
-                            : "기타";
+                      const korean =
+                        payload
+                          ? CATEGORY_LABELS[payload.categoryName] ?? payload.categoryName
+                          : "기타";
 
-                        const amount =
-                          typeof value === "number"
-                            ? value
-                            : typeof value === "string"
-                            ? Number(value)
-                            : 0;
-
-                        const safeAmount = Number.isFinite(amount) ? amount : 0;
-
-                        return [`${safeAmount.toLocaleString()}원`, korean];
-                      }}
-                    />
+                      return [`${formatNumber(value)}원`, korean];
+                    }}
+                  />
 
                   </PieChart>
                 </ResponsiveContainer>
