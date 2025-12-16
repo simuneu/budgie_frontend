@@ -12,7 +12,7 @@ import {
 const WEEK = ["월", "화", "수", "목", "금", "토", "일"];
 
 interface WeeklyExpense {
-  weekly: number; 
+  weekday: number; 
   totalAmount: number;
 }
 
@@ -31,7 +31,7 @@ export default function WeeklyPatternChart({ data }: WeeklyPatternChartProps) {
 
   // 2) 실제 데이터 덮어쓰기
   data.forEach((item) => {
-    const idx = item.weekly - 1;
+    const idx = item.weekday  - 1;
     if (idx >= 0 && idx < 7) {
       base[idx].totalAmount = item.totalAmount ?? 0;
     }

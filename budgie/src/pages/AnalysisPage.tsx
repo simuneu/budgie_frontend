@@ -11,7 +11,7 @@ export interface DailyExpense {
 }
 
 export interface WeeklyExpense {
-  weekly: number;
+  weekday: number;
   totalAmount: number;
 }
 
@@ -47,6 +47,7 @@ export default function AnalysisPage() {
         getTop3(year, month),
         getCompare(year, month),
       ]);
+      console.log("🔥 weekly api raw", w);
 
       // 오늘 포함 지난 7일
       const today = new Date();
