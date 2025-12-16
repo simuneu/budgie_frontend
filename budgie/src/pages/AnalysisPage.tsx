@@ -11,7 +11,7 @@ export interface DailyExpense {
 }
 
 export interface WeeklyExpense {
-  weekday: number;
+  weekly: number;
   totalAmount: number;
 }
 

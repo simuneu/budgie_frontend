@@ -28,15 +28,29 @@ export default function DailyTrendChart({ data }: DailyTrendChartProps) {
         <BarChart data={data}
         margin={{ top: 25, right: 10, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-            <XAxis
+          <XAxis
             dataKey="day"
-            interval={0} 
-            tick={{ fontSize: 12 }}
-            />
+            tickFormatter={(value) =>
+              typeof value === "number" ? `${value}` : ""
+            }
+          />
 
-          <YAxis tick={{ fontSize: 12 }} />
+
+          <YAxis
+            tick={{ fontSize: 12 }}
+            tickFormatter={(value) => {
+              if (value == null) return "";
+              const num = Number(value);
+              return Number.isFinite(num) ? num.toLocaleString() : "";
+            }}
+          />
+
           <Tooltip
             formatter={(value) => {
+              if (value == null) {
+                  return ["0원", "사용 금액"]; 
+              }
+
               const num =
                 typeof value === "number"
                   ? value
@@ -63,14 +77,15 @@ export default function DailyTrendChart({ data }: DailyTrendChartProps) {
               dataKey="totalAmount"
               position="top"
               formatter={(value: unknown) => {
-              const num =
-                typeof value === "number"
-                  ? value
-                  : typeof value === "string"
-                  ? Number(value)
-                  : 0;
+                if (value == null) return "0";
+                const num =
+                  typeof value === "number"
+                    ? value
+                    : typeof value === "string"
+                    ? Number(value)
+                    : 0;
 
-              return Number.isFinite(num) ? num.toLocaleString() : "0";
+                return Number.isFinite(num) ? num.toLocaleString() : "0";
             }}
               style={{ fill: "#444", fontSize: 12, fontWeight: 500 }}
             />

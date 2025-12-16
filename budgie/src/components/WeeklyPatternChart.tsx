@@ -12,7 +12,7 @@ import {
 const WEEK = ["월", "화", "수", "목", "금", "토", "일"];
 
 interface WeeklyExpense {
-  weekday: number; 
+  weekly: number; 
   totalAmount: number;
 }
 
@@ -21,6 +21,8 @@ interface WeeklyPatternChartProps {
 }
 
 export default function WeeklyPatternChart({ data }: WeeklyPatternChartProps) {
+    console.log("weekly raw data", data);
+
   // 1) 월~일(1~7) 기본 0원 세팅
   const base = Array.from({ length: 7 }, (_, i) => ({
     weekday: i + 1,
@@ -29,7 +31,7 @@ export default function WeeklyPatternChart({ data }: WeeklyPatternChartProps) {
 
   // 2) 실제 데이터 덮어쓰기
   data.forEach((item) => {
-    const idx = item.weekday - 1;
+    const idx = item.weekly - 1;
     if (idx >= 0 && idx < 7) {
       base[idx].totalAmount = item.totalAmount ?? 0;
     }
@@ -68,13 +70,24 @@ if (maxDay.totalAmount === 0) {
 
           <XAxis
             dataKey="name"
-            tick={{ fontSize: 12 }}
+            tickFormatter={(value) =>
+              (typeof value === "string" || typeof value === "number") ? `${value}` : ""
+            }
           />
 
-          <YAxis tick={{ fontSize: 12 }} />
+
+          <YAxis
+            tick={{ fontSize: 12 }}
+            tickFormatter={(value) => {
+              if (value == null) return "";
+              const num = Number(value);
+              return Number.isFinite(num) ? num.toLocaleString() : "";
+            }}
+          />
 
           <Tooltip
             formatter={(value: number) => {
+              if (value == null) return ["0원", "사용 금액"];
               const safe = Number.isFinite(value) ? value : 0;
               return [`${safe.toLocaleString()}원`, "사용 금액"];
             }}
@@ -90,6 +103,7 @@ if (maxDay.totalAmount === 0) {
               dataKey="amount"
               position="top"
               formatter={(value: unknown) => {
+                if (value == null) return "0";
                 const num =
                   typeof value === "number"
                     ? value

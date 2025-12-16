@@ -1,15 +1,20 @@
+const SW_VERSION = "2025-12-16-2";
+console.log("[BUDGIE SW]", SW_VERSION);
+
 self.addEventListener("install", () => self.skipWaiting());
 
 self.addEventListener("activate", (event) => {
+  console.log("[BUDGIE SW activate]", SW_VERSION);
+
   event.waitUntil(
     (async () => {
       const keys = await caches.keys();
       await Promise.all(keys.map((key) => caches.delete(key)));
-
       await self.clients.claim();
     })()
   );
 });
+
 
 self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING") {
@@ -42,19 +47,18 @@ self.addEventListener("push", (event) => {
   const title = payload.title || "알림";
   const body = payload.body || "";
 
-  event.waitUntil(
-    self.registration.showNotification(title, { body })
-  );
+  event.waitUntil((async () => {
+    await self.registration.showNotification(title, { body });
 
-  // 모든 클라이언트에 alert-update 전달
-  event.waitUntil(
-    self.clients.matchAll({ includeUncontrolled: true, type: "window" })
-      .then((clients) => {
-        clients.forEach((client) => {
-          client.postMessage({ type: "alert-update" });
-        });
-      })
-  );
+    const clients = await self.clients.matchAll({
+      includeUncontrolled: true,
+      type: "window",
+    });
+
+    clients.forEach((client) => {
+      client.postMessage({ type: "alert-update" });
+    });
+  })());
 });
 
 messaging.onBackgroundMessage((payload) => {
