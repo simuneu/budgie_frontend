@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../axiosConfig"; 
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -23,15 +23,15 @@ export default function Sidebar({ onClose }: SidebarProps) {
   const fetchMyInfo = async () => {
   try {
     const token = localStorage.getItem("accessToken");
-    const res = await axios.get("/users/me", {
+    const res = await api.get("/users/me", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     setUser(res.data.data);
-  } catch (err) {
+  } catch {
     if (import.meta.env.DEV) {
-      console.error("유저 정보 불러오기 실패:", err);
+      //
     }
   }
 };
@@ -63,7 +63,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
   
   const handleLogout = async () => {
     try {
-      await axios.post(
+      await api.post(
         "/auth/logout",
         {},
         {

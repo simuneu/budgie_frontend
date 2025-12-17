@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
+import api from "../axiosConfig";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import type { AxiosError } from "axios";
 
 export default function MyPage() {
   const [nickname, setNickname] = useState("");
@@ -26,7 +27,7 @@ export default function MyPage() {
   // 유저 정보 불러오기
   const fetchInfo = async () => {
     try {
-      const res = await axios.get("/users/me", {
+      const res = await api.get("/users/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const user = res.data.data;
@@ -34,9 +35,9 @@ export default function MyPage() {
       setNickname(user.nickname);
       setNewNickname(user.nickname);
       setUserEmail(user.email);
-    }catch (err) {
+    }catch {
       if (import.meta.env.DEV) {
-        console.error("유저 정보 불러오기 실패:", err);
+       //
       }
     }
   };
@@ -55,7 +56,7 @@ export default function MyPage() {
 
     try {
         // 비밀번호 검증용 요청
-        await axios.post(
+        await api.post(
         "/auth/check-password",
         { password: pw },
         { headers: { Authorization: `Bearer ${token}` } }
@@ -82,7 +83,7 @@ export default function MyPage() {
     }
 
     try {
-      await axios.put(
+      await api.put(
         "/users/nickname",
         { nickname: newNickname },
         { headers: { Authorization: `Bearer ${token}` } }
@@ -105,7 +106,7 @@ export default function MyPage() {
     }
 
     try {
-      await axios.delete("/auth/delete", {
+      await api.delete("/auth/delete", {
         headers: { Authorization: `Bearer ${token}` },
         data: { password: deletePw },
       });
@@ -124,10 +125,7 @@ export default function MyPage() {
 
   // 비밀번호 변경
   const handlePasswordChange = async () => {
-    // console.log(token)
-    // console.log("oldPassword state:", passwordOld);
-    // console.log("newPassword state:", passwordNew);
-    // console.log("confirm state:", passwordNewConfirm);
+   
   setPasswordError("");
   setNewPasswordError("");
 
@@ -146,7 +144,7 @@ export default function MyPage() {
     }
 
     try {
-        await axios.put(
+        await api.put(
         "/users/password",
         {
             currentPassword: passwordOld,

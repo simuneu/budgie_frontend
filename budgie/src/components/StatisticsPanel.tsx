@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../axiosConfig";
 import {
   PieChart,
   Pie,
@@ -44,12 +44,12 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
     try {
       const token = localStorage.getItem("accessToken");
 
-      const exp = await axios.get("/transactions/summary/category", {
+      const exp = await api.get("/transactions/summary/category", {
         params: { year, month },
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const income = await axios.get(
+      const income = await api.get(
         "/transactions/summary/category/income",
         {
           params: { year, month },
@@ -59,9 +59,9 @@ export default function StatisticsPanel({ year, month , refreshKey }: Props) {
 
       setExpenseSummary(exp.data.data || []);
       setIncomeSummary(income.data.data || []);
-    } catch (e) {
+    } catch {
       if (import.meta.env.DEV) {
-        console.error("통계 데이터 불러오기 실패:", e);
+        //
       }
       setExpenseSummary([]);
       setIncomeSummary([]);

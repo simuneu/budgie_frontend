@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from "axios";
+import api from "../axiosConfig";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -108,7 +108,7 @@ export default function AuthPage() {
 
             if (isLogin) {
               // 로그인 요청
-              axios
+              api
                 .post("/auth/login", { email, password })
                 .then((res) => {
                   const accessToken = res.data.accessToken;
@@ -134,7 +134,7 @@ export default function AuthPage() {
               }
 
               // 회원가입 요청
-              axios
+              api
                 .post("/auth/signup", { email, password, nickname })
                  .then((res) => {
                     toast.success(res.data.message ?? "회원가입 성공!");
@@ -203,7 +203,7 @@ export default function AuthPage() {
               <button
                 type="button"
                 onClick={() => {
-                  axios
+                  api
                     .post("/auth/email/send", { email })
                     .then(() => toast.info("인증 이메일이 발송되었습니다."))
                     .catch(() => toast.error("이메일 발송 실패"));
@@ -224,7 +224,7 @@ export default function AuthPage() {
               <button
                 type="button"
                 onClick={() => {
-                  axios
+                  api
                     .post("/auth/email/verify", { email, code })
                     .then(() => {
                       setIsVerified(true);
@@ -332,7 +332,7 @@ export default function AuthPage() {
 
                 <button
                   onClick={() => {
-                    axios.post("/auth/password/reset-request",
+                    api.post("/auth/password/reset-request",
                       { email: resetEmail }
                     )
                       .then(() => {
@@ -394,7 +394,7 @@ export default function AuthPage() {
                       return;
                     }
 
-                    axios.post("/auth/password/reset", {
+                    api.post("/auth/password/reset", {
                       email: resetEmail,
                       code: resetCode,
                       newPassword: newPw,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../axiosConfig"; 
 import { CATEGORY_ICONS } from "../utils/categoryIcons";
 import { CATEGORY_LABELS } from "../utils/categoryLabel";
 import type { Transaction } from "../types/Transaction";
@@ -62,11 +62,11 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
 
     try {
       if (isEditMode) {
-        await axios.put(`/transactions/${transaction!.transactionId}`, payload, {
+        await api.put(`/transactions/${transaction!.transactionId}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
       } else {
-        await axios.post("/transactions", payload, {
+        await api.post("/transactions", payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
@@ -83,7 +83,7 @@ export default function AddTransactionModal({ date, onClose, onSave, transaction
   const loadCategories = async () => {
     const token = localStorage.getItem("accessToken");
 
-    const res = await axios.get("/categories", {
+    const res = await api.get("/categories", {
       headers: { Authorization: `Bearer ${token}` },
     });
 

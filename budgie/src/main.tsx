@@ -25,7 +25,6 @@ if ("serviceWorker" in navigator) {
     const msg = e.data || e;
 
     if (msg?.type === "alert-update") {
-      console.log("dispatch alert-update !");
       window.dispatchEvent(new Event("alert-update"));
     }
   });
@@ -95,7 +94,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/firebase-messaging-sw.js").then((reg) => {
-    console.log("SW registered");
 
     if (reg.waiting) {
       reg.waiting.postMessage({ type: "SKIP_WAITING" });

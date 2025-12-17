@@ -3,8 +3,8 @@ import AuthPage from "./pages/AuthPage";
 import MainLayout from "./layout/MainLayout";
 import PrivateRoute from "./routes/PrivateRoute";
 import Dashboard from "./pages/Dashboard";
-import { useEffect } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import api from "./axiosConfig";
 import { toast } from "react-toastify";
 import AnalysisPage from "./pages/AnalysisPage";
 import MyPage from "./pages/MyPage";
@@ -13,11 +13,26 @@ import OAuthCallback from "./pages/OAuthCallback";
 
 export default function App() {
 
+  const [authReady, setAuthReady] = useState(false);
+
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        await api.post("/auth/refresh");
+      } catch {
+        //
+      } finally {
+        setAuthReady(true); 
+      }
+    };
+
+    initAuth();
+  }, []);
+
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", (e) => {
         if (e.data?.type === "alert-update") {
-          console.log("SW → alert-update");
           window.dispatchEvent(new Event("alert-update"));
         }
       });
@@ -25,6 +40,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (!authReady) return;
     
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken || accessToken === "null") return;
@@ -43,7 +59,7 @@ export default function App() {
         });
 
         if (token) {
-          await axios.post("/fcm/token", { token });
+          await api.post("/fcm/token", { token });
         }
       } catch (err) {
         if (import.meta.env.DEV) console.error(err);
@@ -66,7 +82,7 @@ export default function App() {
       // cleanup
       return () => unsubscribe();
     })();
-  }, []);
+  }, [authReady]);
 
   return (
     <Routes>

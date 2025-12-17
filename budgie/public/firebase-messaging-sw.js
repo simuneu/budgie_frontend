@@ -1,10 +1,8 @@
 const SW_VERSION = "2025-12-16-2";
-console.log("[BUDGIE SW]", SW_VERSION);
 
 self.addEventListener("install", () => self.skipWaiting());
 
 self.addEventListener("activate", (event) => {
-  console.log("[BUDGIE SW activate]", SW_VERSION);
 
   event.waitUntil(
     (async () => {

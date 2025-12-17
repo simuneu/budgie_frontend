@@ -1,4 +1,4 @@
-import axios from "../axiosConfig";
+import api from "../axiosConfig"; 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
@@ -23,7 +23,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
   //알림 지우기
   const deleteAlert = async (id: number) => {
-  await axios.delete(`/alert/${id}`);
+  await api.delete(`/alert/${id}`);
   fetchAlerts();
   fetchUnreadCount();
 };
@@ -31,11 +31,11 @@ export default function Header({ onMenuClick }: HeaderProps) {
   // 알림 전체 가져오기
   const fetchAlerts = async () => {
   try {
-    const res = await axios.get("/alert");
+    const res = await api.get("/alert");
       setAlerts(res.data.data ?? []);
-  } catch (err) {
+  } catch {
     if (import.meta.env.DEV) {
-      console.error("알림 목록 불러오기 실패:", err);
+    //      
     }
   }
 };
@@ -44,11 +44,11 @@ export default function Header({ onMenuClick }: HeaderProps) {
   // 미읽음 개수 가져오기
   const fetchUnreadCount = async () => {
     try {
-      const res = await axios.get("/alert/unread-count");
+      const res = await api.get("/alert/unread-count");
       setUnread(res.data.data ?? 0);
-    } catch (err) {
+    } catch {
       if (import.meta.env.DEV) {
-        console.error("미읽음 카운트 실패:", err);
+        //
       }
     }
   };
@@ -56,7 +56,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
   // 단건 읽음 처리
   const markAsRead = async (id: number) => {
     try {
-      await axios.post(`/alert/${id}/read`);
+      await api.post(`/alert/${id}/read`);
 
       setAlerts((prev) =>
         prev.map((a) => (a.alertId === id ? { ...a, read: true } : a))
@@ -64,9 +64,9 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
       fetchUnreadCount();
       setOpen(false);
-    } catch (err) {
+    } catch  {
       if (import.meta.env.DEV) {
-        console.error("단건 읽음 실패:", err);
+        //
       }
     }
   };
@@ -74,13 +74,13 @@ export default function Header({ onMenuClick }: HeaderProps) {
   // 전체 읽음 처리
   const markAllAsRead = async () => {
     try {
-      await axios.put("/alert/read-all");
+      await api.put("/alert/read-all");
 
       setAlerts((prev) => prev.map((a) => ({ ...a, read: true })));
       setUnread(0);
-    } catch (err) {
+    } catch  {
       if (import.meta.env.DEV) {
-        console.error("전체 읽음 실패:", err);
+        //
       }
     }
   };
@@ -91,7 +91,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
     if (!token) {
       if (import.meta.env.DEV) {
-        console.log("로그인 안됨 → 알림 API 미호출");
+        //
       }
       return;
     }
@@ -116,7 +116,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
   useEffect(() => {
     const handler = () => {
       if (import.meta.env.DEV) {
-        console.log("alert-update 이벤트 감지 → Header 재로드");
+        //
       }
       fetchAlerts();
       fetchUnreadCount();

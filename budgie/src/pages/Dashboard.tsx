@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../axiosConfig";
 import { toast } from "react-toastify";
 import GoalModal from "../components/GoalModal";
 import Calendar from "../components/Calendar";
@@ -51,7 +51,7 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem("accessToken");
 
-      const res = await axios.get("/budget/goal", {
+      const res = await api.get("/budget/goal", {
         params: { year, month },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -69,7 +69,7 @@ export default function Dashboard() {
   try {
     const token = localStorage.getItem("accessToken");
 
-    await axios.put(
+    await api.put(
       `/budget/goal/${year}/${month}`,
       { goalAmount: amount },
       { headers: { Authorization: `Bearer ${token}` } }
@@ -90,7 +90,7 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem("accessToken");
 
-      const res = await axios.get("/transactions/summary", {
+      const res = await api.get("/transactions/summary", {
         params: { year, month },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -106,7 +106,7 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem("accessToken");
 
-      await axios.post(
+      await api.post(
         "/budget/goal",
         { year, month, goalAmount: amount },
         { headers: { Authorization: `Bearer ${token}` } }
@@ -125,7 +125,7 @@ export default function Dashboard() {
   useEffect(() => {
   const token = localStorage.getItem("accessToken");
 
-  axios
+  api
     .get(`/transactions/days`, {
       params: { year, month },
       headers: { Authorization: `Bearer ${token}` },
@@ -151,7 +151,7 @@ export default function Dashboard() {
 
   const refreshRecordedDays = () => {
   const token = localStorage.getItem("accessToken");
-  axios
+  api
     .get("/transactions/days", {
       params: { year, month },
       headers: { Authorization: `Bearer ${token}` },
@@ -173,7 +173,7 @@ export default function Dashboard() {
     const token = localStorage.getItem("accessToken");
 
     try {
-      await axios.delete(`/transactions/${id}`, {
+      await api.delete(`/transactions/${id}`, {
          headers: {
            Authorization: `Bearer ${token}`,
          },
@@ -187,9 +187,9 @@ export default function Dashboard() {
       fetchMonthlySummary();
       refreshRecordedDays();
       setRefreshKey(prev => prev + 1);
-     } catch (e) {
+     } catch {
       if (import.meta.env.DEV) {
-        console.error("삭제 실패:", e);
+        //
       }
       toast.error("삭제 실패");
     }
@@ -205,7 +205,7 @@ export default function Dashboard() {
       const token = localStorage.getItem("accessToken");
       const [yearStr, monthStr, dayStr] = date.split("-");
 
-      const res = await axios.get("/transactions", {
+      const res = await api.get("/transactions", {
         params: {
           year: Number(yearStr),
           month: Number(monthStr),
@@ -216,9 +216,9 @@ export default function Dashboard() {
       const data = res.data?.data;
 
       setTransactions(Array.isArray(data) ? data : []);
-    } catch (e) {
+    } catch {
       if (import.meta.env.DEV) {
-        console.error("거래 내역 불러오기 실패:", e);
+        //
       }
       setTransactions([]);
     }

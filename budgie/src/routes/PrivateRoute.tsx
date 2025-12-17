@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState, type ReactNode } from "react";
-import axios from "axios";
+import api from "../axiosConfig";
 
 interface Props {
   children: ReactNode;
@@ -21,7 +21,7 @@ export default function PrivateRoute({ children }: Props) {
     }
 
     // 2) accessToken 없으면 refreshToken으로 갱신 시도
-    axios
+    api
       .post("/auth/refresh", {}, { withCredentials: true })
       .then((res) => {
         const accessToken = res.data.data.accessToken;

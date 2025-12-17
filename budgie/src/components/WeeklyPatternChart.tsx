@@ -21,7 +21,6 @@ interface WeeklyPatternChartProps {
 }
 
 export default function WeeklyPatternChart({ data }: WeeklyPatternChartProps) {
-    console.log("weekly raw data", data);
 
   // 1) 월~일(1~7) 기본 0원 세팅
   const base = Array.from({ length: 7 }, (_, i) => ({

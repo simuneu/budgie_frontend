@@ -1,10 +1,14 @@
 import axios, { type AxiosRequestHeaders } from "axios";
 
-axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "";
-axios.defaults.withCredentials = true;
+
+const api = axios.create({
+  baseURL: "https://www.budgie.fit/api",
+  withCredentials: true,
+});
+
 
 // ===== REQUEST INTERCEPTOR =====
-axios.interceptors.request.use(
+api.interceptors.request.use(
   (config) => {
    if (config.url?.includes("/auth/refresh")) {
        if (config.headers) delete config.headers.Authorization;
@@ -38,21 +42,28 @@ function addRefreshSubscriber(callback: (token: string) => void) {
   refreshSubscribers.push(callback);
 }
 
-axios.interceptors.response.use(
+api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const { response, config } = error;
 
+     if (config?.url?.includes("/auth/refresh")) {
+      return Promise.reject(error);
+    }
+
     // accessToken 만료 → 401 
-    if (response?.status === 401 && !config._retry) {
+    if (response?.status === 401 && !config._retry &&
+      !config.url?.includes("/auth/refresh")
+    ) {
       config._retry = true;
 
       // 이미 refresh 요청 중이면 기다리기
       if (isRefreshing) {
         return new Promise((resolve) => {
           addRefreshSubscriber((newToken) => {
+            config.headers = (config.headers ?? {}) as AxiosRequestHeaders;
             config.headers.Authorization = `Bearer ${newToken}`;
-            resolve(axios(config));
+            resolve(api(config));
           });
         });
       }
@@ -61,7 +72,7 @@ axios.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await axios.post(
+        const res = await api.post(
           "/auth/refresh",
           {},
           {withCredentials: true}
@@ -74,10 +85,12 @@ axios.interceptors.response.use(
         isRefreshing = false;
         onRefreshed(newAccessToken);
 
+        config.headers = (config.headers ?? {}) as AxiosRequestHeaders;
         config.headers.Authorization = `Bearer ${newAccessToken}`;
-        return axios(config);
+        return api(config);
       } catch (err) {
         isRefreshing = false;
+        refreshSubscribers = [];
         localStorage.removeItem("accessToken");
         window.location.href = "/";
         return Promise.reject(err);
@@ -88,4 +101,4 @@ axios.interceptors.response.use(
   }
 );
 
-export default axios;
+export default api;
